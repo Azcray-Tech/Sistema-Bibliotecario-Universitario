@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup del Sistema - Sistema Bibliográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+            --sidebar-width: 280px;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: var(--color-bg-light);
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.9rem 1.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--color-accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: var(--color-accent);
+            font-weight: 600;
+        }
+        
+        .menu-section {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+        
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .content-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .backup-main-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 4px solid #28a745;
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .backup-main-card h3 {
+            color: #1e7e34;
+            margin-bottom: 1.5rem;
+        }
+        
+        .backup-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(40, 167, 69, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #1e7e34;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-primary-custom {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .btn-success-large {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success-large:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box h5 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+        
+        .info-box ul {
+            margin-bottom: 0;
+            padding-left: 1.5rem;
+        }
+        
+        .info-box li {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+        
+        .backup-history-item {
+            background: var(--color-bg-light);
+            border-left: 4px solid var(--color-primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .backup-history-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .backup-info {
+            flex: 1;
+        }
+        
+        .backup-date {
+            font-weight: 700;
+            color: var(--color-primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .backup-details {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+        
+        .backup-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .action-btn-download {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .action-btn-download:hover {
+            background: #138496;
+        }
+        
+        .action-btn-restore {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .action-btn-restore:hover {
+            background: #e0a800;
+        }
+        
+        .action-btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .action-btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .stat-label {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .progress-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .progress {
+            height: 30px;
+            border-radius: 8px;
+        }
+        
+        .progress-bar {
+            background: var(--color-primary);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="04-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="08-listado-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="05-gestion-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="10-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="06-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="07-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="#" class="menu-item active">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="12-configuracion.html" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="01-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h2><i class="bi bi-database me-2"></i>Backup del Sistema</h2>
+                <small class="text-muted">Gestione las copias de seguridad de la base de datos</small>
+            </div>
+
+            <!-- Estadísticas de Backup -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Último Backup</div>
+                    <div class="stat-value">01/02/2026</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total de Backups</div>
+                    <div class="stat-value">28</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Espacio Utilizado</div>
+                    <div class="stat-value">2.4 GB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Estado del Sistema</div>
+                    <div class="stat-value text-success">Óptimo</div>
+                </div>
+            </div>
+
+            <!-- Generar Nuevo Backup -->
+            <div class="backup-main-card">
+                <div class="text-center">
+                    <div class="backup-icon mx-auto">
+                        <i class="bi bi-cloud-download"></i>
+                    </div>
+                    <h3>Generar Nuevo Backup</h3>
+                    <p class="mb-4">Cree una copia de seguridad completa de la base de datos del sistema. Este proceso puede tardar algunos minutos dependiendo del tamaño de los datos.</p>
+                    <button class="btn btn-success-large" onclick="generarBackup()">
+                        <i class="bi bi-download me-2"></i>Generar Backup Ahora
+                    </button>
+                </div>
+            </div>
+
+            <!-- Barra de Progreso -->
+            <div class="progress-container" id="progressContainer">
+                <h5 class="mb-3">Generando backup...</h5>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="progressBar">0%</div>
+                </div>
+                <p class="text-muted mt-2 mb-0">Por favor espere, no cierre esta ventana.</p>
+            </div>
+
+            <!-- Información Importante -->
+            <div class="info-box">
+                <h5><i class="bi bi-info-circle me-2"></i>Información Importante sobre Backups</h5>
+                <ul>
+                    <li><strong>Ubicación:</strong> Los backups se guardan en <code>C:\BackupsSistemaBiblioteca\</code></li>
+                    <li><strong>Formato:</strong> Archivos .zip con fecha y hora de creación</li>
+                    <li><strong>Contenido:</strong> Base de datos completa + imágenes de portadas + configuraciones</li>
+                    <li><strong>Recomendación:</strong> Realizar backup antes de vacaciones o mantenimientos importantes</li>
+                    <li><strong>Sincronización:</strong> Se recomienda configurar sincronización automática con servicios en la nube (Google Drive, Dropbox)</li>
+                    <li><strong>Retención:</strong> Se mantienen automáticamente los últimos 30 backups</li>
+                </ul>
+            </div>
+
+            <!-- Historial de Backups -->
+            <div class="content-card">
+                <h4 class="mb-4"><i class="bi bi-clock-history me-2"></i>Historial de Backups</h4>
+                
+                <div class="backup-history-item">
+                    <div class="backup-info">
+                        <div class="backup-date">
+                            <i class="bi bi-calendar-check me-2"></i>01 de Febrero de 2026, 14:30
+                        </div>
+                        <div class="backup-details">
+                            <i class="bi bi-file-earmark-zip me-2"></i>biblioteca_backup_20260201_1430.zip
+                            <span class="ms-3"><i class="bi bi-hdd me-1"></i>86.5 MB</span>
+                            <span class="ms-3"><i class="bi bi-check-circle text-success me-1"></i>Completo</span>
+                        </div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="action-btn action-btn-download" title="Descargar">
+                            <i class="bi bi-download"></i> Descargar
+                        </button>
+                        <button class="action-btn action-btn-restore" title="Restaurar" onclick="confirmarRestauracion()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                        </button>
+                        <button class="action-btn action-btn-delete" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="backup-history-item">
+                    <div class="backup-info">
+                        <div class="backup-date">
+                            <i class="bi bi-calendar-check me-2"></i>25 de Enero de 2026, 09:15
+                        </div>
+                        <div class="backup-details">
+                            <i class="bi bi-file-earmark-zip me-2"></i>biblioteca_backup_20260125_0915.zip
+                            <span class="ms-3"><i class="bi bi-hdd me-1"></i>84.2 MB</span>
+                            <span class="ms-3"><i class="bi bi-check-circle text-success me-1"></i>Completo</span>
+                        </div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="action-btn action-btn-download" title="Descargar">
+                            <i class="bi bi-download"></i> Descargar
+                        </button>
+                        <button class="action-btn action-btn-restore" title="Restaurar" onclick="confirmarRestauracion()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                        </button>
+                        <button class="action-btn action-btn-delete" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="backup-history-item">
+                    <div class="backup-info">
+                        <div class="backup-date">
+                            <i class="bi bi-calendar-check me-2"></i>18 de Enero de 2026, 16:45
+                        </div>
+                        <div class="backup-details">
+                            <i class="bi bi-file-earmark-zip me-2"></i>biblioteca_backup_20260118_1645.zip
+                            <span class="ms-3"><i class="bi bi-hdd me-1"></i>82.8 MB</span>
+                            <span class="ms-3"><i class="bi bi-check-circle text-success me-1"></i>Completo</span>
+                        </div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="action-btn action-btn-download" title="Descargar">
+                            <i class="bi bi-download"></i> Descargar
+                        </button>
+                        <button class="action-btn action-btn-restore" title="Restaurar" onclick="confirmarRestauracion()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                        </button>
+                        <button class="action-btn action-btn-delete" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="backup-history-item">
+                    <div class="backup-info">
+                        <div class="backup-date">
+                            <i class="bi bi-calendar-check me-2"></i>10 de Enero de 2026, 11:20
+                        </div>
+                        <div class="backup-details">
+                            <i class="bi bi-file-earmark-zip me-2"></i>biblioteca_backup_20260110_1120.zip
+                            <span class="ms-3"><i class="bi bi-hdd me-1"></i>80.5 MB</span>
+                            <span class="ms-3"><i class="bi bi-check-circle text-success me-1"></i>Completo</span>
+                        </div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="action-btn action-btn-download" title="Descargar">
+                            <i class="bi bi-download"></i> Descargar
+                        </button>
+                        <button class="action-btn action-btn-restore" title="Restaurar" onclick="confirmarRestauracion()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                        </button>
+                        <button class="action-btn action-btn-delete" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="backup-history-item">
+                    <div class="backup-info">
+                        <div class="backup-date">
+                            <i class="bi bi-calendar-check me-2"></i>03 de Enero de 2026, 08:00
+                        </div>
+                        <div class="backup-details">
+                            <i class="bi bi-file-earmark-zip me-2"></i>biblioteca_backup_20260103_0800.zip
+                            <span class="ms-3"><i class="bi bi-hdd me-1"></i>79.1 MB</span>
+                            <span class="ms-3"><i class="bi bi-check-circle text-success me-1"></i>Completo</span>
+                        </div>
+                    </div>
+                    <div class="backup-actions">
+                        <button class="action-btn action-btn-download" title="Descargar">
+                            <i class="bi bi-download"></i> Descargar
+                        </button>
+                        <button class="action-btn action-btn-restore" title="Restaurar" onclick="confirmarRestauracion()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                        </button>
+                        <button class="action-btn action-btn-delete" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Restauración -->
+    <div class="modal fade" id="restoreModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Restauración</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>¡ATENCIÓN!</strong> Esta acción restaurará la base de datos al estado del backup seleccionado.</p>
+                    <p class="text-danger"><strong>Se perderán todos los cambios realizados después de esta fecha.</strong></p>
+                    <p class="mb-0">Se recomienda crear un backup del estado actual antes de continuar.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning">Restaurar Backup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function generarBackup() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            
+            progressContainer.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressContainer.style.display = 'none';
+                        progressBar.style.width = '0%';
+                        progressBar.textContent = '0%';
+                        alert('¡Backup generado exitosamente!\n\nArchivo: biblioteca_backup_20260205_1025.zip\nUbicación: C:\\BackupsSistemaBiblioteca\\');
+                        location.reload();
+                    }, 1000);
+                }
+            }, 500);
+        }
+        
+        function confirmarRestauracion() {
+            const modal = new bootstrap.Modal(document.getElementById('restoreModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

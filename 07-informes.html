@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informes e Inventario - Sistema Bibliográfico</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/fonts.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+            --sidebar-width: 280px;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: var(--color-bg-light);
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header .user-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.9rem 1.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--color-accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: var(--color-accent);
+            font-weight: 600;
+        }
+        
+        .menu-section {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+        
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .report-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .report-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            border-left-color: var(--color-primary);
+        }
+        
+        .report-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .report-card.primary .report-icon {
+            background: rgba(44, 95, 79, 0.1);
+            color: var(--color-primary);
+        }
+        
+        .report-card.secondary .report-icon {
+            background: rgba(139, 115, 85, 0.1);
+            color: var(--color-secondary);
+        }
+        
+        .report-card.accent .report-icon {
+            background: rgba(212, 165, 116, 0.1);
+            color: var(--color-accent);
+        }
+        
+        .report-card.info .report-icon {
+            background: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        
+        .report-card h5 {
+            margin-bottom: 0.75rem;
+            color: var(--color-text-dark);
+        }
+        
+        .report-card p {
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .btn-primary-custom {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .form-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--color-text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 79, 0.15);
+        }
+        
+        .inventory-table {
+            font-size: 1rem;
+        }
+        
+        .inventory-table thead {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .inventory-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .inventory-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .inventory-total {
+            background: var(--color-bg-light);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .backup-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #fff8dc 100%);
+            border-left: 4px solid #ffc107;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .backup-section h5 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+        
+        .backup-info {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .backup-info i {
+            color: #856404;
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="04-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="05-gestion-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="06-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="#" class="menu-item active">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="01-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h2><i class="bi bi-file-earmark-bar-graph me-2"></i>Informes e Inventario</h2>
+                <small class="text-muted">Genere reportes y gestione el inventario de la biblioteca</small>
+            </div>
+
+            <!-- Reportes Predefinidos -->
+            <h4 class="mb-4">Reportes Predefinidos</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="report-card primary">
+                        <div class="report-icon">
+                            <i class="bi bi-book-fill"></i>
+                        </div>
+                        <h5>Listado de Libros Nuevos</h5>
+                        <p>Genera un listado de todos los libros agregados recientemente al sistema.</p>
+                        <button class="btn btn-primary-custom">
+                            <i class="bi bi-printer me-2"></i>Generar e Imprimir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="report-card secondary">
+                        <div class="report-icon">
+                            <i class="bi bi-bar-chart-fill"></i>
+                        </div>
+                        <h5>Estadísticas de Préstamos</h5>
+                        <p>Reporte detallado de préstamos por período, usuario y categoría.</p>
+                        <button class="btn btn-primary-custom">
+                            <i class="bi bi-printer me-2"></i>Generar e Imprimir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="report-card accent">
+                        <div class="report-icon">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <h5>Usuarios con Retrasos</h5>
+                        <p>Lista de usuarios con préstamos vencidos y sanciones aplicadas.</p>
+                        <button class="btn btn-primary-custom">
+                            <i class="bi bi-printer me-2"></i>Generar e Imprimir
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="report-card info">
+                        <div class="report-icon">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h5>Libros Más Solicitados</h5>
+                        <p>Ranking de los libros con mayor cantidad de préstamos.</p>
+                        <button class="btn btn-primary-custom">
+                            <i class="bi bi-printer me-2"></i>Generar e Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventario Anual -->
+            <div class="form-container mt-5">
+                <h4 class="mb-4"><i class="bi bi-box-seam me-2"></i>Inventario Anual</h4>
+                <p class="text-muted mb-4">Resumen automático del inventario total por categoría para cierre de año</p>
+                
+                <div class="table-responsive">
+                    <table class="table inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Total de Títulos</th>
+                                <th>Total de Ejemplares</th>
+                                <th>En Préstamo</th>
+                                <th>Disponibles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Filosofía</strong></td>
+                                <td>320</td>
+                                <td>485</td>
+                                <td>42</td>
+                                <td>443</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Historia</strong></td>
+                                <td>285</td>
+                                <td>410</td>
+                                <td>38</td>
+                                <td>372</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Economía</strong></td>
+                                <td>240</td>
+                                <td>360</td>
+                                <td>35</td>
+                                <td>325</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sociología</strong></td>
+                                <td>210</td>
+                                <td>315</td>
+                                <td>28</td>
+                                <td>287</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Integración Latinoamericana</strong></td>
+                                <td>192</td>
+                                <td>280</td>
+                                <td>25</td>
+                                <td>255</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tesis</strong></td>
+                                <td>145</td>
+                                <td>145</td>
+                                <td>15</td>
+                                <td>130</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Revistas</strong></td>
+                                <td>520</td>
+                                <td>2,340</td>
+                                <td>68</td>
+                                <td>2,272</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Anuarios</strong></td>
+                                <td>88</td>
+                                <td>195</td>
+                                <td>12</td>
+                                <td>183</td>
+                            </tr>
+                            <tr class="inventory-total">
+                                <td>TOTAL GENERAL</td>
+                                <td>2,000</td>
+                                <td>4,530</td>
+                                <td>263</td>
+                                <td>4,267</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex gap-3 justify-content-end mt-4">
+                    <button class="btn btn-primary-custom">
+                        <i class="bi bi-printer me-2"></i>Imprimir Inventario
+                    </button>
+                    <button class="btn btn-primary-custom">
+                        <i class="bi bi-file-earmark-excel me-2"></i>Exportar a Excel
+                    </button>
+                    <button class="btn btn-primary-custom">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>Exportar a PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Respaldo del Sistema -->
+            <div class="backup-section">
+                <h5><i class="bi bi-database me-2"></i>Respaldo del Sistema (Backup)</h5>
+                <div class="backup-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>
+                        <p class="mb-2">
+                            El sistema permite generar una copia de seguridad completa de la base de datos 
+                            de forma manual. Esta funcionalidad es especialmente útil antes de períodos de 
+                            vacaciones o mantenimiento.
+                        </p>
+                        <p class="mb-0">
+                            <strong>Ubicación del respaldo:</strong> C:\BackupsSistemaBiblioteca<br>
+                            <strong>Formato:</strong> Archivo .zip con fecha y hora de creación<br>
+                            <strong>Último backup:</strong> 01/02/2026 a las 14:30
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-warning btn-lg">
+                        <i class="bi bi-cloud-download me-2"></i>Generar Backup Ahora
+                    </button>
+                </div>
+            </div>
+
+            <!-- Generador de Reportes Personalizado -->
+            <div class="form-container">
+                <h4 class="mb-4"><i class="bi bi-sliders me-2"></i>Generador de Reportes Personalizado</h4>
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="tipoReporte" class="form-label">Tipo de Reporte</label>
+                            <select class="form-select" id="tipoReporte">
+                                <option value="">Seleccione el tipo...</option>
+                                <option value="libros">Libros y Materiales</option>
+                                <option value="prestamos">Préstamos</option>
+                                <option value="usuarios">Usuarios</option>
+                                <option value="categorias">Por Categoría</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="formato" class="form-label">Formato de Salida</label>
+                            <select class="form-select" id="formato">
+                                <option value="pdf">PDF</option>
+                                <option value="excel">Excel</option>
+                                <option value="imprimir">Imprimir Directamente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="fechaInicio" class="form-label">Fecha Inicio (Opcional)</label>
+                            <input type="date" class="form-control" id="fechaInicio">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fechaFin" class="form-label">Fecha Fin (Opcional)</label>
+                            <input type="date" class="form-control" id="fechaFin">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-end mt-4">
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-file-earmark-plus me-2"></i>Generar Reporte
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración del Sistema - Sistema Bibliográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+            --sidebar-width: 280px;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: var(--color-bg-light);
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.9rem 1.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--color-accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: var(--color-accent);
+            font-weight: 600;
+        }
+        
+        .menu-section {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+        
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .config-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .section-header {
+            background: var(--color-bg-light);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .section-header h5 {
+            margin-bottom: 0;
+            color: var(--color-primary);
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--color-text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 79, 0.15);
+        }
+        
+        .form-text {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+        
+        .btn-primary-custom {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .config-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .config-item:last-child {
+            border-bottom: none;
+        }
+        
+        .config-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .config-value {
+            color: var(--color-text-muted);
+        }
+        
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            cursor: pointer;
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        
+        .alert-info-custom {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 4px solid #17a2b8;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .alert-info-custom h5 {
+            color: #0c5460;
+            margin-bottom: 0.75rem;
+        }
+        
+        .alert-info-custom p {
+            color: #0c5460;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="04-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="08-listado-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="05-gestion-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="10-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="06-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="07-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="11-backup.html" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="#" class="menu-item active">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="01-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h2><i class="bi bi-gear me-2"></i>Configuración del Sistema</h2>
+                <small class="text-muted">Administre los parámetros y políticas del sistema bibliográfico</small>
+            </div>
+
+            <!-- Información General -->
+            <div class="alert-info-custom">
+                <h5><i class="bi bi-info-circle me-2"></i>Configuración del Sistema</h5>
+                <p>Los cambios en la configuración afectan el comportamiento global del sistema. Asegúrese de revisar cuidadosamente antes de guardar.</p>
+            </div>
+
+            <!-- Información de la Biblioteca -->
+            <div class="config-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-building me-2"></i>Información de la Biblioteca</h5>
+                </div>
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="nombreBiblioteca" class="form-label">Nombre de la Biblioteca</label>
+                            <input type="text" class="form-control" id="nombreBiblioteca" value="Biblioteca Especializada en Integración Latinoamericana">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="codigoBiblioteca" class="form-label">Código de Biblioteca</label>
+                            <input type="text" class="form-control" id="codigoBiblioteca" value="BEIL-2026">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <textarea class="form-control" id="direccion" rows="2">Av. Principal, Edificio Académico, Piso 3, Caracas, Venezuela</textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" value="+58 212-1234567">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" value="biblioteca@institucion.edu.ve">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sitioWeb" class="form-label">Sitio Web</label>
+                            <input type="url" class="form-control" id="sitioWeb" value="https://biblioteca.institucion.edu.ve">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Políticas de Préstamo -->
+            <div class="config-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-calendar-check me-2"></i>Políticas de Préstamo</h5>
+                </div>
+                <form>
+                    <h6 class="mb-3">Estudiantes</h6>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="maxItemsEstudiante" class="form-label">Máximo de Ítems</label>
+                            <input type="number" class="form-control" id="maxItemsEstudiante" value="3" min="1" max="10">
+                            <div class="form-text">Número de libros que puede pedir simultáneamente</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="diasPrestamoEstudiante" class="form-label">Días de Préstamo</label>
+                            <input type="number" class="form-control" id="diasPrestamoEstudiante" value="7" min="1" max="30">
+                            <div class="form-text">Duración del préstamo en días</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="renovacionesEstudiante" class="form-label">Renovaciones Permitidas</label>
+                            <input type="number" class="form-control" id="renovacionesEstudiante" value="1" min="0" max="5">
+                            <div class="form-text">Número de veces que puede renovar</div>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3">Profesores</h6>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label for="maxItemsProfesor" class="form-label">Máximo de Ítems</label>
+                            <input type="number" class="form-control" id="maxItemsProfesor" value="5" min="1" max="10">
+                            <div class="form-text">Número de libros que puede pedir simultáneamente</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="diasPrestamoProfesor" class="form-label">Días de Préstamo</label>
+                            <input type="number" class="form-control" id="diasPrestamoProfesor" value="14" min="1" max="60">
+                            <div class="form-text">Duración del préstamo en días</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="renovacionesProfesor" class="form-label">Renovaciones Permitidas</label>
+                            <input type="number" class="form-control" id="renovacionesProfesor" value="1" min="0" max="5">
+                            <div class="form-text">Número de veces que puede renovar</div>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3">Sanciones</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="diasSancionPorDia" class="form-label">Días de Sanción por Día de Retraso</label>
+                            <input type="number" class="form-control" id="diasSancionPorDia" value="2" min="1" max="10">
+                            <div class="form-text">Por cada día de retraso, el usuario será suspendido X días</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Bloqueo Automático por Retraso</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="bloqueoAutomatico" checked>
+                                <label class="form-check-label" for="bloqueoAutomatico">
+                                    Activar bloqueo automático de usuarios con préstamos vencidos
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Configuración de Imágenes -->
+            <div class="config-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-image me-2"></i>Configuración de Imágenes</h5>
+                </div>
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="anchoImagen" class="form-label">Ancho de Imagen (px)</label>
+                            <input type="number" class="form-control" id="anchoImagen" value="300" min="100" max="1000">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="altoImagen" class="form-label">Alto de Imagen (px)</label>
+                            <input type="number" class="form-control" id="altoImagen" value="400" min="100" max="1000">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="maxTamanoImagen" class="form-label">Tamaño Máximo (KB)</label>
+                            <input type="number" class="form-control" id="maxTamanoImagen" value="200" min="50" max="5000">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Formatos Permitidos</label>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="formatoJPG" checked>
+                                        <label class="form-check-label" for="formatoJPG">JPG/JPEG</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="formatoPNG" checked>
+                                        <label class="form-check-label" for="formatoPNG">PNG</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="formatoWEBP">
+                                        <label class="form-check-label" for="formatoWEBP">WEBP</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Configuración de Seguridad -->
+            <div class="config-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-shield-lock me-2"></i>Configuración de Seguridad</h5>
+                </div>
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="minCaracteres" class="form-label">Mínimo de Caracteres en Contraseña</label>
+                            <input type="number" class="form-control" id="minCaracteres" value="8" min="6" max="20">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tiempoSesion" class="form-label">Tiempo de Sesión (minutos)</label>
+                            <input type="number" class="form-control" id="tiempoSesion" value="60" min="15" max="480">
+                            <div class="form-text">Tiempo de inactividad antes de cerrar sesión automáticamente</div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="config-item">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="requiereMayuscula" checked>
+                                    <label class="form-check-label" for="requiereMayuscula">
+                                        <strong>Requerir al menos una letra mayúscula</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="config-item">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="requiereNumero" checked>
+                                    <label class="form-check-label" for="requiereNumero">
+                                        <strong>Requerir al menos un número</strong>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="config-item">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="requiereEspecial" checked>
+                                    <label class="form-check-label" for="requiereEspecial">
+                                        <strong>Requerir al menos un carácter especial</strong>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Configuración del Sistema -->
+            <div class="config-section">
+                <div class="section-header">
+                    <h5><i class="bi bi-sliders me-2"></i>Configuración General del Sistema</h5>
+                </div>
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="idiomaInterface" class="form-label">Idioma de la Interfaz</label>
+                            <select class="form-select" id="idiomaInterface">
+                                <option value="es" selected>Español</option>
+                                <option value="en">English</option>
+                                <option value="pt">Português</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="zona horaria" class="form-label">Zona Horaria</label>
+                            <select class="form-select" id="zonaHoraria">
+                                <option value="America/Caracas" selected>Caracas (GMT-4)</option>
+                                <option value="America/Bogota">Bogotá (GMT-5)</option>
+                                <option value="America/Mexico_City">Ciudad de México (GMT-6)</option>
+                                <option value="America/Buenos_Aires">Buenos Aires (GMT-3)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <div class="config-item">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="notificacionesEmail" checked>
+                                    <label class="form-check-label" for="notificacionesEmail">
+                                        <strong>Enviar notificaciones por correo electrónico</strong><br>
+                                        <span class="text-muted">Recordatorios de devolución, avisos de vencimiento, etc.</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="config-item">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="modoMantenimiento">
+                                    <label class="form-check-label" for="modoMantenimiento">
+                                        <strong>Modo de Mantenimiento</strong><br>
+                                        <span class="text-muted">Desactiva el acceso público temporalmente</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="config-item">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="backupAutomatico" checked>
+                                    <label class="form-check-label" for="backupAutomatico">
+                                        <strong>Backup Automático Semanal</strong><br>
+                                        <span class="text-muted">Genera un backup cada domingo a las 2:00 AM</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="d-flex gap-3 justify-content-end">
+                <button type="button" class="btn btn-secondary">
+                    <i class="bi bi-x-lg me-2"></i>Cancelar Cambios
+                </button>
+                <button type="button" class="btn btn-primary-custom" onclick="guardarConfiguracion()">
+                    <i class="bi bi-save me-2"></i>Guardar Configuración
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function guardarConfiguracion() {
+            alert('Configuración guardada exitosamente.\n\nLos cambios han sido aplicados al sistema.');
+        }
+    </script>
+</body>
+</html>

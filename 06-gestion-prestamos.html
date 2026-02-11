@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Préstamos - Sistema Bibliográfico</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/fonts.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+            --sidebar-width: 280px;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: var(--color-bg-light);
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header .user-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.9rem 1.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--color-accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: var(--color-accent);
+            font-weight: 600;
+        }
+        
+        .menu-section {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+        
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--color-text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 79, 0.15);
+        }
+        
+        .btn-primary-custom {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .user-info-card {
+            background: var(--color-bg-light);
+            border: 2px solid var(--color-accent);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .user-info-card h6 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .policy-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 4px solid #28a745;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .policy-card h5 {
+            color: #1e7e34;
+            margin-bottom: 1rem;
+        }
+        
+        .policy-item {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .policy-item i {
+            color: #1e7e34;
+            font-size: 1.2rem;
+        }
+        
+        .table-custom {
+            font-size: 0.95rem;
+        }
+        
+        .table-custom thead {
+            background: var(--color-bg-light);
+            font-weight: 600;
+        }
+        
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table-custom tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            margin: 0 0.2rem;
+        }
+        
+        .action-btn-return {
+            background: #28a745;
+            color: white;
+        }
+        
+        .action-btn-return:hover {
+            background: #218838;
+        }
+        
+        .action-btn-renew {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .action-btn-renew:hover {
+            background: #138496;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="04-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="05-gestion-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="#" class="menu-item active">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="07-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="01-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h2><i class="bi bi-arrow-left-right me-2"></i>Gestión de Préstamos</h2>
+                <small class="text-muted">Registre nuevos préstamos y gestione los activos</small>
+            </div>
+
+            <!-- Políticas de Préstamo -->
+            <div class="policy-card">
+                <h5><i class="bi bi-info-circle me-2"></i>Políticas de Préstamo</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="policy-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Estudiantes:</strong> Máximo 3 ítems por 7 días
+                            </div>
+                        </div>
+                        <div class="policy-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Profesores:</strong> Máximo 5 ítems por 14 días
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="policy-item">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <div>
+                                <strong>Renovaciones:</strong> 1 permitida (sin reservas pendientes)
+                            </div>
+                        </div>
+                        <div class="policy-item">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <div>
+                                <strong>Sanciones:</strong> 2 días de suspensión por cada día de retraso
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Préstamo -->
+            <div class="form-container">
+                <h4 class="mb-4"><i class="bi bi-plus-circle me-2"></i>Registrar Nuevo Préstamo</h4>
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="cedula" class="form-label">Cédula de Identidad <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="cedula" placeholder="V-12345678" required>
+                            <div class="form-text">El sistema autocompletará los datos si el usuario está registrado</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tipoUsuario" class="form-label">Tipo de Usuario <span class="text-danger">*</span></label>
+                            <select class="form-select" id="tipoUsuario" required>
+                                <option value="">Seleccione...</option>
+                                <option value="estudiante">Estudiante</option>
+                                <option value="profesor">Profesor</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Información del Usuario (autocompletada) -->
+                    <div class="user-info-card">
+                        <h6><i class="bi bi-person-fill me-2"></i>Información del Usuario</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span>Nombre:</span>
+                                    <strong>María González Pérez</strong>
+                                </div>
+                                <div class="info-row">
+                                    <span>Correo:</span>
+                                    <strong>maria.gonzalez@ejemplo.edu</strong>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span>Teléfono:</span>
+                                    <strong>+58 424-1234567</strong>
+                                </div>
+                                <div class="info-row">
+                                    <span>Préstamos Activos:</span>
+                                    <strong class="text-success">1 / 3</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 mt-3">
+                        <div class="col-md-6">
+                            <label for="codigoLibro" class="form-label">Código del Libro (ISBN) <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="codigoLibro" placeholder="978-3-16-148410-0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fechaDevolucion" class="form-label">Fecha de Devolución</label>
+                            <input type="date" class="form-control" id="fechaDevolucion" readonly>
+                            <div class="form-text">Se calcula automáticamente según el tipo de usuario</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-end mt-4">
+                        <button type="button" class="btn btn-secondary">
+                            <i class="bi bi-x-lg me-2"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-check-lg me-2"></i>Registrar Préstamo
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Préstamos Activos -->
+            <div class="form-container">
+                <h4 class="mb-4"><i class="bi bi-list-ul me-2"></i>Préstamos Activos</h4>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Cédula</th>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Devolución</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>María González</td>
+                                <td>V-12345678</td>
+                                <td>El Pensamiento Crítico...</td>
+                                <td>04/02/2026</td>
+                                <td>11/02/2026</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-return">
+                                        <i class="bi bi-check-lg"></i> Devolver
+                                    </button>
+                                    <button class="action-btn action-btn-renew">
+                                        <i class="bi bi-arrow-repeat"></i> Renovar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Carlos Pérez</td>
+                                <td>V-23456789</td>
+                                <td>Integración Latinoamericana</td>
+                                <td>28/01/2026</td>
+                                <td>11/02/2026</td>
+                                <td><span class="badge bg-warning">Por vencer</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-return">
+                                        <i class="bi bi-check-lg"></i> Devolver
+                                    </button>
+                                    <button class="action-btn action-btn-renew">
+                                        <i class="bi bi-arrow-repeat"></i> Renovar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Ana Martínez</td>
+                                <td>V-34567890</td>
+                                <td>Sociología de los Movimientos</td>
+                                <td>15/01/2026</td>
+                                <td>29/01/2026</td>
+                                <td><span class="badge bg-danger">Vencido (6 días)</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-return">
+                                        <i class="bi bi-check-lg"></i> Devolver
+                                    </button>
+                                    <button class="action-btn action-btn-renew" disabled>
+                                        <i class="bi bi-arrow-repeat"></i> Renovar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pedro Ramírez</td>
+                                <td>V-45678901</td>
+                                <td>Historia de América Latina</td>
+                                <td>03/02/2026</td>
+                                <td>17/02/2026</td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-return">
+                                        <i class="bi bi-check-lg"></i> Devolver
+                                    </button>
+                                    <button class="action-btn action-btn-renew">
+                                        <i class="bi bi-arrow-repeat"></i> Renovar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

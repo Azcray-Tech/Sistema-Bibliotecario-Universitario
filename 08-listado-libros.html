@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Libros - Sistema Bibliográfico</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/fonts.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+            --sidebar-width: 280px;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: var(--color-bg-light);
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .admin-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-header h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header .user-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            padding: 1.5rem 0;
+        }
+        
+        .menu-item {
+            padding: 0.9rem 1.5rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--color-accent);
+        }
+        
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: var(--color-accent);
+            font-weight: 600;
+        }
+        
+        .menu-section {
+            padding: 1rem 1.5rem 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+        }
+        
+        .logout-btn {
+            padding: 0.8rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-primary-custom {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .filters-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 79, 0.15);
+        }
+        
+        .content-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .table-custom {
+            font-size: 0.95rem;
+        }
+        
+        .table-custom thead {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .table-custom tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .book-thumbnail-small {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            margin: 0 0.2rem;
+        }
+        
+        .action-btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .action-btn-view:hover {
+            background: #138496;
+        }
+        
+        .action-btn-edit {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .action-btn-edit:hover {
+            background: #e0a800;
+        }
+        
+        .action-btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .action-btn-delete:hover {
+            background: #c82333;
+        }
+        
+        .badge-category {
+            background: var(--color-accent);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .stats-summary {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .stat-item i {
+            font-size: 1.2rem;
+            color: var(--color-primary);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="04-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="#" class="menu-item active">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="05-gestion-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="09-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="06-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="10-historial-prestamos.html" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="11-retrasos-sanciones.html" class="menu-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="07-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="12-usuarios.html" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="13-configuracion.html" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="01-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2>Listado de Libros y Materiales</h2>
+                    <small class="text-muted">Administre el catálogo completo de la biblioteca</small>
+                </div>
+                <a href="05-gestion-libros.html" class="btn btn-primary-custom">
+                    <i class="bi bi-plus-lg me-2"></i>Agregar Nuevo
+                </a>
+            </div>
+
+            <!-- Filtros de Búsqueda -->
+            <div class="filters-card">
+                <h5 class="mb-3"><i class="bi bi-funnel me-2"></i>Filtros de Búsqueda</h5>
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Buscar por título...">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Buscar por autor...">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option value="">Todas las categorías</option>
+                                <option>Filosofía</option>
+                                <option>Historia</option>
+                                <option>Economía</option>
+                                <option>Sociología</option>
+                                <option>Integración Latinoamericana</option>
+                                <option>Tesis</option>
+                                <option>Revistas</option>
+                                <option>Anuarios</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option value="">Tipo de material</option>
+                                <option>Libro</option>
+                                <option>Revista</option>
+                                <option>Tesis</option>
+                                <option>Anuario</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="bi bi-search"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Estadísticas Rápidas -->
+            <div class="stats-summary mb-3">
+                <div class="stat-item">
+                    <i class="bi bi-book-fill"></i>
+                    <div>
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Total Libros</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="bi bi-check-circle-fill text-success"></i>
+                    <div>
+                        <div class="stat-value">984</div>
+                        <div class="stat-label">Disponibles</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="bi bi-arrow-left-right text-warning"></i>
+                    <div>
+                        <div class="stat-value">263</div>
+                        <div class="stat-label">En Préstamo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Libros -->
+            <div class="content-card">
+                <h4 class="mb-4">Catálogo Completo (Mostrando 10 de 1,247)</h4>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Portada</th>
+                                <th>Título</th>
+                                <th>Autor(es)</th>
+                                <th>ISBN</th>
+                                <th>Categoría</th>
+                                <th>Ubicación</th>
+                                <th>Stock</th>
+                                <th style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/2c5f4f/ffffff?text=1" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>El Pensamiento Crítico en América Latina</strong></td>
+                                <td>Pablo Coello Martínez</td>
+                                <td>978-3-16-148410-0</td>
+                                <td><span class="badge-category">Filosofía</span></td>
+                                <td>3A-FIL-045</td>
+                                <td>3 / 3</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar" onclick="window.location.href='08-editar-libro.html'">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar" onclick="confirmarEliminacion()">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/8b7355/ffffff?text=2" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>Integración y Desarrollo en Latinoamérica</strong></td>
+                                <td>Pablo Coello M., Ana García López</td>
+                                <td>978-1-23-456789-7</td>
+                                <td><span class="badge-category">Integración</span></td>
+                                <td>5B-INT-023</td>
+                                <td>3 / 5</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/d4a574/ffffff?text=3" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>Sociología de los Movimientos Sociales</strong></td>
+                                <td>Pablo Coello Martínez</td>
+                                <td>978-0-12-345678-9</td>
+                                <td><span class="badge-category">Sociología</span></td>
+                                <td>2C-SOC-067</td>
+                                <td>1 / 1</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/17a2b8/ffffff?text=4" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>Historia Económica de América Latina</strong></td>
+                                <td>Carlos Rodríguez Silva</td>
+                                <td>978-2-34-567890-1</td>
+                                <td><span class="badge-category">Economía</span></td>
+                                <td>4A-ECO-012</td>
+                                <td>0 / 2</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/28a745/ffffff?text=5" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>Filosofía Latinoamericana Contemporánea</strong></td>
+                                <td>María Fernández Torres</td>
+                                <td>978-3-45-678901-2</td>
+                                <td><span class="badge-category">Filosofía</span></td>
+                                <td>3B-FIL-089</td>
+                                <td>4 / 4</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/ffc107/ffffff?text=6" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>Revista de Integración Regional N°42</strong></td>
+                                <td>Varios Autores</td>
+                                <td>978-4-56-789012-3</td>
+                                <td><span class="badge-category">Revistas</span></td>
+                                <td>6A-REV-042</td>
+                                <td>7 / 12</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="https://via.placeholder.com/50x70/6c757d/ffffff?text=7" class="book-thumbnail-small" alt="Portada">
+                                </td>
+                                <td><strong>Tesis: Políticas Públicas en Venezuela</strong></td>
+                                <td>Juan Carlos Méndez</td>
+                                <td>978-5-67-890123-4</td>
+                                <td><span class="badge-category">Tesis</span></td>
+                                <td>7C-TES-015</td>
+                                <td>1 / 1</td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-edit" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-delete" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger me-2"></i>Confirmar Eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro que desea eliminar este libro del sistema?</p>
+                    <p class="text-danger mb-0"><strong>Esta acción no se puede deshacer.</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmarEliminacion() {
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

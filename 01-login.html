@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Bibliográfico - Login</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/fonts.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: linear-gradient(135deg, var(--color-bg-light) 0%, #e8e4df 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+        
+        .login-left {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            padding: 3rem 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .login-left h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .login-left p {
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .login-right {
+            padding: 3rem 2.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--color-text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 79, 0.15);
+        }
+        
+        .btn-login {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-login:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .password-requirements {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-top: 0.5rem;
+        }
+        
+        .icon-library {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="row g-0">
+                <div class="col-md-5 login-left">
+                    <div>
+                        <i class="bi bi-book-half icon-library"></i>
+                        <h2>Sistema de Control Bibliográfico</h2>
+                        <p>Biblioteca Especializada en Integración Latinoamericana</p>
+                        <p class="mt-4">Gestión integral de libros, tesis, revistas y anuarios con herramientas avanzadas de búsqueda y administración.</p>
+                    </div>
+                </div>
+                <div class="col-md-7 login-right">
+                    <h3 class="mb-4">Acceso Administrativo</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="username" placeholder="Ingrese su usuario">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña">
+                            <div class="password-requirements">
+                                <i class="bi bi-info-circle"></i> Mínimo 8 caracteres, 1 mayúscula, 1 número y 1 carácter especial
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <a href="#" class="text-decoration-none" style="color: var(--color-primary);">
+                                <small>¿Olvidó su contraseña?</small>
+                            </a>
+                        </div>
+                        <button type="submit" class="btn btn-login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </button>
+                        <div class="text-center mt-4">
+                            <a href="02-consulta-publica.html" class="text-decoration-none" style="color: var(--color-primary);">
+                                <i class="bi bi-search me-2"></i>Ir a consulta pública
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

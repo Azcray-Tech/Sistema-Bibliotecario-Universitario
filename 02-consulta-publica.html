@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Pública - Sistema Bibliográfico</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/fonts.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+
+    <style>
+        :root {
+            --color-primary: #2c5f4f;
+            --color-secondary: #8b7355;
+            --color-accent: #d4a574;
+            --color-bg-light: #f8f6f3;
+            --color-text-dark: #2d2d2d;
+            --color-text-muted: #6c757d;
+        }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14pt;
+            background: var(--color-bg-light);
+            color: var(--color-text-dark);
+        }
+        
+        h1, h2, h3, h4, h5 {
+            font-family: 'Libre Baskerville', serif;
+        }
+        
+        .navbar-custom {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-family: 'Libre Baskerville', serif;
+            font-weight: 700;
+            color: var(--color-primary) !important;
+            font-size: 1.4rem;
+        }
+        
+        .hero-search {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #1e4438 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-search h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-search p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .search-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            margin-top: -3rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .search-tabs {
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-tabs .nav-link {
+            color: var(--color-text-muted);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .search-tabs .nav-link.active {
+            color: var(--color-primary);
+            border-bottom: 3px solid var(--color-primary);
+            background: transparent;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 0.2rem rgba(44, 95, 79, 0.15);
+        }
+        
+        .btn-search {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-search:hover {
+            background: #1e4438;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 95, 79, 0.3);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .book-item {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: start;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .book-item:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            border-color: var(--color-accent);
+            transform: translateX(4px);
+        }
+        
+        .book-thumbnail {
+            width: 100px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+        
+        .book-info {
+            flex: 1;
+        }
+        
+        .book-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-text-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .book-author {
+            color: var(--color-text-muted);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .book-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-top: 0.75rem;
+        }
+        
+        .badge-category {
+            background: var(--color-accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-available {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .pagination-custom {
+            margin-top: 2rem;
+        }
+        
+        .pagination-custom .page-link {
+            color: var(--color-primary);
+            border: 2px solid #e0e0e0;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+        }
+        
+        .pagination-custom .page-link:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .pagination-custom .page-item.active .page-link {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        
+        .quick-categories {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .category-chip {
+            background: white;
+            border: 2px solid var(--color-accent);
+            color: var(--color-text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-chip:hover {
+            background: var(--color-accent);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-custom navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-book-half me-2"></i>Sistema Bibliográfico
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="01-login.html">
+                            <i class="bi bi-shield-lock me-1"></i>Acceso Administrativo
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-search">
+        <div class="container text-center">
+            <h1>Catálogo Bibliográfico</h1>
+            <p>Biblioteca Especializada en Integración Latinoamericana</p>
+        </div>
+    </div>
+
+    <!-- Search Container -->
+    <div class="container">
+        <div class="search-container">
+            <ul class="nav nav-tabs search-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#general">
+                        <i class="bi bi-search me-2"></i>Búsqueda General
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#advanced">
+                        <i class="bi bi-funnel me-2"></i>Búsqueda Avanzada
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- General Search -->
+                <div class="tab-pane fade show active" id="general">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" placeholder="Buscar por título, autor, ISBN o palabra clave..." value="Pablo Coello">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-search w-100">
+                                    <i class="bi bi-search me-2"></i>Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <div class="quick-categories">
+                        <span style="font-weight: 600; margin-right: 0.5rem;">Categorías rápidas:</span>
+                        <span class="category-chip">Filosofía</span>
+                        <span class="category-chip">Historia</span>
+                        <span class="category-chip">Economía</span>
+                        <span class="category-chip">Sociología</span>
+                        <span class="category-chip">Integración Latinoamericana</span>
+                        <span class="category-chip">Tesis</span>
+                        <span class="category-chip">Revistas</span>
+                    </div>
+                </div>
+
+                <!-- Advanced Search -->
+                <div class="tab-pane fade" id="advanced">
+                    <form>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Título</label>
+                                <input type="text" class="form-control" placeholder="Título del libro">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Autor</label>
+                                <input type="text" class="form-control" placeholder="Nombre del autor">
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">ISBN</label>
+                                <input type="text" class="form-control" placeholder="Código ISBN">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Categoría</label>
+                                <select class="form-select">
+                                    <option value="">Todas las categorías</option>
+                                    <option value="filosofia">Filosofía</option>
+                                    <option value="historia">Historia</option>
+                                    <option value="economia">Economía</option>
+                                    <option value="sociologia">Sociología</option>
+                                    <option value="integracion">Integración Latinoamericana</option>
+                                    <option value="tesis">Tesis</option>
+                                    <option value="revistas">Revistas</option>
+                                    <option value="anuarios">Anuarios</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo de Material</label>
+                                <select class="form-select">
+                                    <option value="">Todos</option>
+                                    <option value="libro">Libro</option>
+                                    <option value="revista">Revista</option>
+                                    <option value="tesis">Tesis</option>
+                                    <option value="anuario">Anuario</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <button type="submit" class="btn btn-search w-100">
+                                    <i class="bi bi-search me-2"></i>Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="mt-5">
+            <div class="results-header">
+                <div>
+                    <h4 class="mb-0">Resultados de búsqueda</h4>
+                    <small class="text-muted">Se encontraron 3 libros</small>
+                </div>
+                <div>
+                    <select class="form-select" style="width: auto;">
+                        <option>Ordenar por relevancia</option>
+                        <option>Título (A-Z)</option>
+                        <option>Título (Z-A)</option>
+                        <option>Autor (A-Z)</option>
+                        <option>Más recientes</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Book Items -->
+            <div class="book-item" onclick="window.location.href='03-ficha-libro.html'">
+                <img src="https://isbnmexico.indautor.cerlalc.org/files/titulos/389534.jpg" alt="Portada" class="book-thumbnail">
+                <div class="book-info">
+                    <div class="book-title">El Pensamiento Crítico en América Latina</div>
+                    <div class="book-author">Pablo Coello Martínez</div>
+                    <div class="book-meta">
+                        <span><i class="bi bi-upc-scan me-1"></i>ISBN: 978-3-16-148410-0</span>
+                        <span><i class="bi bi-geo-alt me-1"></i>Estante 3A - Biblioteca Central</span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="badge-category">Filosofía</span>
+                        <span class="badge-available ms-2">Disponible</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-item">
+                <img src="https://repositorio.cepal.org/server/api/core/bitstreams/872ea529-f1a3-4e9e-92bd-76fd5868aab1/content" alt="Portada" class="book-thumbnail">
+                <div class="book-info">
+                    <div class="book-title">Integración y Desarrollo en Latinoamérica</div>
+                    <div class="book-author">Pablo Coello Martínez, Ana García López</div>
+                    <div class="book-meta">
+                        <span><i class="bi bi-upc-scan me-1"></i>ISBN: 978-1-23-456789-7</span>
+                        <span><i class="bi bi-geo-alt me-1"></i>Estante 5B - Biblioteca Central</span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="badge-category">Integración Latinoamericana</span>
+                        <span class="badge-available ms-2">Disponible (3 copias)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-item">
+                <img src="https://m.media-amazon.com/images/I/61jnuQE0xRL._AC_UF1000,1000_QL80_.jpg" alt="Portada" class="book-thumbnail">
+                <div class="book-info">
+                    <div class="book-title">Sociología de los Movimientos Sociales</div>
+                    <div class="book-author">Pablo Coello Martínez</div>
+                    <div class="book-meta">
+                        <span><i class="bi bi-upc-scan me-1"></i>ISBN: 978-0-12-345678-9</span>
+                        <span><i class="bi bi-geo-alt me-1"></i>Estante 2C - Biblioteca Central</span>
+                    </div>
+                    <div class="mt-2">
+                        <span class="badge-category">Sociología</span>
+                        <span class="badge-available ms-2">Disponible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <nav class="pagination-custom">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div style="height: 4rem;"></div>
+
+</body>
+</html>
