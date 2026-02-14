@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link href="css/styles.css" rel="stylesheet">
     <script src="js/bootstrap.bundle.min.js" defer></script>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-custom navbar-expand-lg">
@@ -54,8 +56,9 @@
         <div class="book-detail-container">
             <div class="row">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
-                    <img src="https://isbnmexico.indautor.cerlalc.org/files/titulos/389534.jpg" alt="Portada del libro" class="book-cover-large">
-                    
+                    <img src="https://isbnmexico.indautor.cerlalc.org/files/titulos/389534.jpg" alt="Portada del libro"
+                        class="book-cover-large">
+
                     <div class="availability-box">
                         <h5><i class="bi bi-check-circle me-2"></i>Disponible</h5>
                         <p class="mb-0">
@@ -72,9 +75,38 @@
                         <i class="bi bi-person-fill me-2"></i>Pablo Coello Martínez
                     </div>
 
+                    <!-- Resumen ABSTRACT -->
+                    <div class="actra-section">
+                        <h5><i class="bi bi-file-text-fill me-2"></i>Resumen (ABSTRACT)</h5>
+                        <div class="actra-text" id="resumen">
+                            Este libro explora el desarrollo del pensamiento crítico en América Latina desde mediados
+                            del siglo XX hasta la actualidad.
+                            A través de un análisis exhaustivo de las principales corrientes filosóficas que han
+                            influenciado el pensamiento latinoamericano,
+                            el autor examina cómo los intelectuales de la región han abordado cuestiones fundamentales
+                            sobre identidad, desarrollo,
+                            justicia social y liberación.
+                            <br><br>
+                            La obra se divide en cinco capítulos que recorren cronológicamente las diferentes etapas del
+                            pensamiento crítico latinoamericano,
+                            desde la filosofía de la liberación hasta las corrientes poscoloniales contemporáneas.
+                            Coello Martínez analiza las contribuciones
+                            de pensadores clave como Enrique Dussel, Paulo Freire, y otros filósofos que han marcado el
+                            desarrollo intelectual de la región.
+                            <br><br>
+                            El libro es una contribución significativa al campo de los estudios latinoamericanos y
+                            ofrece una perspectiva única sobre
+                            cómo el pensamiento crítico ha evolucionado en respuesta a los desafíos sociales, políticos
+                            y económicos de la región.
+                        </div>
+                        <button id="toggleBtn" class="btn btn-link p-0 mt-2">Ver más</button>
+                    </div>
+
                     <div class="mb-3">
-                        <span class="badge badge-large" style="background: var(--color-accent); color: white;">Filosofía</span>
-                        <span class="badge badge-large ms-2" style="background: var(--color-secondary); color: white;">Libro</span>
+                        <span class="badge badge-large mt-4"
+                            style="background: var(--color-accent); color: white;">Filosofía</span>
+                        <span class="badge badge-large ms-2"
+                            style="background: var(--color-secondary); color: white;">Libro</span>
                     </div>
 
                     <div class="info-section">
@@ -125,26 +157,48 @@
                         </div>
                     </div>
 
-                    <div class="actra-section">
-                        <h5><i class="bi bi-file-text-fill me-2"></i>Resumen (ABSTRACT)</h5>
-                        <div class="actra-text">
-                            Este libro explora el desarrollo del pensamiento crítico en América Latina desde mediados del siglo XX hasta la actualidad. 
-                            A través de un análisis exhaustivo de las principales corrientes filosóficas que han influenciado el pensamiento latinoamericano, 
-                            el autor examina cómo los intelectuales de la región han abordado cuestiones fundamentales sobre identidad, desarrollo, 
-                            justicia social y liberación.
-                            <br><br>
-                            La obra se divide en cinco capítulos que recorren cronológicamente las diferentes etapas del pensamiento crítico latinoamericano, 
-                            desde la filosofía de la liberación hasta las corrientes poscoloniales contemporáneas. Coello Martínez analiza las contribuciones 
-                            de pensadores clave como Enrique Dussel, Paulo Freire, y otros filósofos que han marcado el desarrollo intelectual de la región.
-                            <br><br>
-                            El libro es una contribución significativa al campo de los estudios latinoamericanos y ofrece una perspectiva única sobre 
-                            cómo el pensamiento crítico ha evolucionado en respuesta a los desafíos sociales, políticos y económicos de la región.
-                        </div>
-                    </div>
+
+
+                    <style>
+                        .actra-text {
+                            max-height: 120px;
+                            /* altura inicial visible */
+                            overflow: hidden;
+                            transition: max-height 0.5s ease;
+                        }
+
+                        .actra-text.expanded {
+                            max-height: 1000px;
+                            /* altura grande para mostrar todo */
+                        }
+
+                        #toggleBtn {
+                            color: var(--color-accent);
+                            text-decoration: none;
+                            font-weight: bold;
+                            cursor: pointer;
+                        }
+                    </style>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const resumen = document.getElementById("resumen");
+                            const toggleBtn = document.getElementById("toggleBtn");
+
+                            toggleBtn.addEventListener("click", () => {
+                                resumen.classList.toggle("expanded");
+                                toggleBtn.textContent = resumen.classList.contains("expanded") ?
+                                    "Ver menos" : "Ver más";
+                            });
+                        });
+                    </script>
+
                 </div>
             </div>
         </div>
     </div>
+    </div>
 
 </body>
+
 </html>
