@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Sistema Bibliográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="modulo-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="modulo-listado-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="modulo-agregar-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="modulo-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="modulo-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="modulo-renovaciones.html" class="menu-item">
+                    <i class="bi bi-arrow-repeat"></i>
+                    <span>Renovaciones</span>
+                </a>
+                <a href="modulo-historial.html" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="modulo-retrasos-sanciones.html" class="menu-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="modulo-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="modulo-inventario.html" class="menu-item active">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="modulo-usuarios.html" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="modulo-backup.html" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="modulo-configuracion.html" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="modulo-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2><i class="bi bi-box-seam me-2"></i>Inventario Anual</h2>
+                    <small class="text-muted">Control de existencias y estado del acervo bibliográfico</small>
+                </div>
+                <button class="btn btn-primary-custom" onclick="generarInventarioPDF()">
+                    <i class="bi bi-file-pdf me-2"></i>Exportar a PDF
+                </button>
+            </div>
+
+            <!-- Resumen General -->
+            <div class="stats-grid">
+                <div class="stat-card accent-1">
+                    <div class="stat-icon">
+                        <i class="bi bi-book-fill"></i>
+                    </div>
+                    <div class="stat-value">2,000</div>
+                    <div class="stat-label">Títulos Totales</div>
+                </div>
+                <div class="stat-card accent-2">
+                    <div class="stat-icon">
+                        <i class="bi bi-stack"></i>
+                    </div>
+                    <div class="stat-value">4,530</div>
+                    <div class="stat-label">Ejemplares Totales</div>
+                </div>
+                <div class="stat-card accent-3">
+                    <div class="stat-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="stat-value">4,267</div>
+                    <div class="stat-label">Disponibles</div>
+                </div>
+                <div class="stat-card accent-4">
+                    <div class="stat-icon">
+                        <i class="bi bi-arrow-left-right"></i>
+                    </div>
+                    <div class="stat-value">263</div>
+                    <div class="stat-label">En Préstamo</div>
+                </div>
+            </div>
+
+            <!-- Inventario por Categoría -->
+            <div class="content-card">
+                <h4 class="mb-4"><i class="bi bi-pie-chart me-2"></i>Inventario por Categoría</h4>
+                <div class="table-responsive">
+                    <table class="table inventory-table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Títulos</th>
+                                <th>Ejemplares Totales</th>
+                                <th>En Préstamo</th>
+                                <th>Disponibles</th>
+                                <th>% Disponibilidad</th>
+                                <th>Valor Estimado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-lightbulb-fill text-success me-2"></i>
+                                    <strong>Filosofía</strong>
+                                </td>
+                                <td>320</td>
+                                <td>485</td>
+                                <td>38</td>
+                                <td>447</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 92%">92%</div>
+                                    </div>
+                                </td>
+                                <td>$14,550</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-clock-history text-warning me-2"></i>
+                                    <strong>Historia</strong>
+                                </td>
+                                <td>285</td>
+                                <td>410</td>
+                                <td>32</td>
+                                <td>378</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 92%">92%</div>
+                                    </div>
+                                </td>
+                                <td>$12,300</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+                                    <strong>Economía</strong>
+                                </td>
+                                <td>240</td>
+                                <td>360</td>
+                                <td>45</td>
+                                <td>315</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 87.5%">87.5%</div>
+                                    </div>
+                                </td>
+                                <td>$10,800</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-people-fill text-info me-2"></i>
+                                    <strong>Sociología</strong>
+                                </td>
+                                <td>210</td>
+                                <td>315</td>
+                                <td>28</td>
+                                <td>287</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 91%">91%</div>
+                                    </div>
+                                </td>
+                                <td>$9,450</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-globe-americas text-success me-2"></i>
+                                    <strong>Integración Latinoamericana</strong>
+                                </td>
+                                <td>192</td>
+                                <td>280</td>
+                                <td>22</td>
+                                <td>258</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 92%">92%</div>
+                                    </div>
+                                </td>
+                                <td>$8,400</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-mortarboard-fill text-danger me-2"></i>
+                                    <strong>Tesis</strong>
+                                </td>
+                                <td>145</td>
+                                <td>145</td>
+                                <td>8</td>
+                                <td>137</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 94.5%">94.5%</div>
+                                    </div>
+                                </td>
+                                <td>$2,900</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-journal-text text-secondary me-2"></i>
+                                    <strong>Revistas</strong>
+                                </td>
+                                <td>520</td>
+                                <td>2,340</td>
+                                <td>75</td>
+                                <td>2,265</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 96.8%">96.8%</div>
+                                    </div>
+                                </td>
+                                <td>$11,700</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="bi bi-calendar-range text-muted me-2"></i>
+                                    <strong>Anuarios</strong>
+                                </td>
+                                <td>88</td>
+                                <td>195</td>
+                                <td>15</td>
+                                <td>180</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-success" style="width: 92.3%">92.3%</div>
+                                    </div>
+                                </td>
+                                <td>$3,900</td>
+                            </tr>
+                            <tr class="inventory-total">
+                                <td><strong>TOTAL GENERAL</strong></td>
+                                <td><strong>2,000</strong></td>
+                                <td><strong>4,530</strong></td>
+                                <td><strong>263</strong></td>
+                                <td><strong>4,267</strong></td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-primary" style="width: 94.2%"><strong>94.2%</strong></div>
+                                    </div>
+                                </td>
+                                <td><strong>$74,000</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Inventario por Ubicación -->
+            <div class="content-card">
+                <h4 class="mb-4"><i class="bi bi-geo-alt me-2"></i>Inventario por Ubicación Física</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Biblioteca Central</h5>
+                        <div class="table-responsive">
+                            <table class="table table-custom table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Estante</th>
+                                        <th>Ejemplares</th>
+                                        <th>Capacidad</th>
+                                        <th>Ocupación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Estante 1A</strong></td>
+                                        <td>245</td>
+                                        <td>300</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-success" style="width: 81.6%">82%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estante 2A</strong></td>
+                                        <td>268</td>
+                                        <td>300</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-warning" style="width: 89.3%">89%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estante 3A</strong></td>
+                                        <td>285</td>
+                                        <td>300</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-danger" style="width: 95%">95%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estante 4A</strong></td>
+                                        <td>220</td>
+                                        <td>300</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-success" style="width: 73.3%">73%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estante 5A</strong></td>
+                                        <td>198</td>
+                                        <td>300</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-success" style="width: 66%">66%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Sala de Tesis y Publicaciones</h5>
+                        <div class="table-responsive">
+                            <table class="table table-custom table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Estante</th>
+                                        <th>Ejemplares</th>
+                                        <th>Capacidad</th>
+                                        <th>Ocupación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Estante 6B</strong></td>
+                                        <td>145</td>
+                                        <td>200</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-success" style="width: 72.5%">72%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estante 7B</strong></td>
+                                        <td>520</td>
+                                        <td>600</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-warning" style="width: 86.6%">87%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Estante 8B</strong></td>
+                                        <td>188</td>
+                                        <td>200</td>
+                                        <td>
+                                            <div class="progress" style="height: 15px;">
+                                                <div class="progress-bar bg-danger" style="width: 94%">94%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado del Acervo -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="content-card">
+                        <h4 class="mb-4"><i class="bi bi-shield-check me-2"></i>Estado de Conservación</h4>
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Estado</th>
+                                        <th>Cantidad</th>
+                                        <th>Porcentaje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-success">Excelente</span>
+                                        </td>
+                                        <td>2,850</td>
+                                        <td>62.9%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-primary">Bueno</span>
+                                        </td>
+                                        <td>1,320</td>
+                                        <td>29.1%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">Regular</span>
+                                        </td>
+                                        <td>295</td>
+                                        <td>6.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-danger">Requiere Restauración</span>
+                                        </td>
+                                        <td>65</td>
+                                        <td>1.5%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="content-card">
+                        <h4 class="mb-4"><i class="bi bi-calendar-event me-2"></i>Adquisiciones del Año</h4>
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Mes</th>
+                                        <th>Títulos</th>
+                                        <th>Ejemplares</th>
+                                        <th>Inversión</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Enero 2026</td>
+                                        <td>12</td>
+                                        <td>18</td>
+                                        <td>$540</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Febrero 2026</td>
+                                        <td>8</td>
+                                        <td>12</td>
+                                        <td>$360</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Diciembre 2025</td>
+                                        <td>15</td>
+                                        <td>22</td>
+                                        <td>$660</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Noviembre 2025</td>
+                                        <td>20</td>
+                                        <td>28</td>
+                                        <td>$840</td>
+                                    </tr>
+                                    <tr class="table-primary">
+                                        <td><strong>Total Año 2025-2026</strong></td>
+                                        <td><strong>185</strong></td>
+                                        <td><strong>267</strong></td>
+                                        <td><strong>$8,010</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notas del Inventario -->
+            <div class="content-card">
+                <h4 class="mb-4"><i class="bi bi-clipboard-check me-2"></i>Notas y Observaciones del Inventario</h4>
+                <div class="alert alert-info">
+                    <h6><i class="bi bi-info-circle me-2"></i>Fecha del último inventario físico: 15 de Enero de 2026</h6>
+                    <p class="mb-2"><strong>Responsable:</strong> Lic. Ana García López - Jefa de Biblioteca</p>
+                    <p class="mb-0"><strong>Próximo inventario programado:</strong> 15 de Enero de 2027</p>
+                </div>
+
+                <h6 class="mt-4 mb-3">Observaciones:</h6>
+                <ul>
+                    <li>Se identificaron 65 ejemplares que requieren restauración profesional.</li>
+                    <li>El estante 3A está cerca de su capacidad máxima (95%) - se recomienda redistribución.</li>
+                    <li>Las adquisiciones del año 2025-2026 representan un incremento del 4.2% del acervo total.</li>
+                    <li>El índice de disponibilidad general (94.2%) se mantiene dentro de los estándares óptimos.</li>
+                    <li>Se recomienda presupuestar $2,600 para la restauración de ejemplares deteriorados.</li>
+                </ul>
+
+                <div class="mt-4">
+                    <button class="btn btn-success me-2" onclick="generarInventarioPDF()">
+                        <i class="bi bi-file-pdf me-2"></i>Generar Informe PDF
+                    </button>
+                    <button class="btn btn-primary-custom me-2" onclick="exportarExcel()">
+                        <i class="bi bi-file-excel me-2"></i>Exportar a Excel
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function generarInventarioPDF() {
+            alert('Generando informe PDF del inventario...\nEl archivo se descargará automáticamente.');
+        }
+
+        function exportarExcel() {
+            alert('Exportando datos a Excel...\nEl archivo se descargará automáticamente.');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Sistema Bibliográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="modulo-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="modulo-listado-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="modulo-agregar-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="modulo-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="modulo-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="modulo-historial.html" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="modulo-retrasos-sanciones.html" class="menu-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="modulo-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="modulo-inventario.html" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="modulo-usuarios.html" class="menu-item active">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="modulo-backup.html" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="modulo-configuracion.html" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="modulo-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2><i class="bi bi-people me-2"></i>Gestión de Usuarios</h2>
+                    <small class="text-muted">Administre estudiantes y profesores del sistema</small>
+                </div>
+                <!-- <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#nuevoUsuarioModal">
+                    <i class="bi bi-person-plus me-2"></i>Agregar Usuario
+                </button> -->
+            </div>
+
+            <!-- Estadísticas Rápidas -->
+            <div class="stats-grid">
+                <div class="stat-card accent-1">
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">Total Usuarios</div>
+                </div>
+                <div class="stat-card accent-2">
+                    <div class="stat-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div class="stat-value">128</div>
+                    <div class="stat-label">Estudiantes</div>
+                </div>
+                <div class="stat-card accent-3">
+                    <div class="stat-icon">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+                    <div class="stat-value">28</div>
+                    <div class="stat-label">Profesores</div>
+                </div>
+                <div class="stat-card accent-4">
+                    <div class="stat-icon">
+                        <i class="bi bi-book-half"></i>
+                    </div>
+                    <div class="stat-value">38</div>
+                    <div class="stat-label">Préstamos Activos</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-card">
+                <h5 class="mb-3"><i class="bi bi-funnel me-2"></i>Filtros de Búsqueda</h5>
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Buscar por nombre...">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Buscar por cédula...">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option value="">Todos los tipos</option>
+                                <option>Estudiante</option>
+                                <option>Profesor</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select">
+                                <option value="">Todos los estados</option>
+                                <option>Activo</option>
+                                <option>Suspendido</option>
+                                <option>Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="bi bi-search"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabs: Estudiantes y Profesores -->
+            <div class="content-card">
+                <ul class="nav nav-tabs search-tabs mb-4">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#estudiantes">
+                            <i class="bi bi-mortarboard-fill me-2"></i>Estudiantes (128)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#profesores">
+                            <i class="bi bi-person-workspace me-2"></i>Profesores (28)
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <!-- Tab Estudiantes -->
+                    <div class="tab-pane fade show active" id="estudiantes">
+                        <div class="table-responsive">
+                            <table class="table table-custom table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cédula</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Préstamos Activos</th>
+                                        <th>Estado</th>
+                                        <th style="width: 200px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>V-27.456.789</strong></td>
+                                        <td>María Rodríguez González</td>
+                                        <td>maria.rodriguez@universidad.edu.ve</td>
+                                        <td>+58 414-1234567</td>
+                                        <td><span class="badge bg-warning">2 / 3</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('María Rodríguez')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('María Rodríguez')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-28.123.456</strong></td>
+                                        <td>Carlos Méndez Torres</td>
+                                        <td>carlos.mendez@universidad.edu.ve</td>
+                                        <td>+58 424-7654321</td>
+                                        <td><span class="badge bg-success">0 / 3</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Carlos Méndez')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Carlos Méndez')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-26.789.012</strong></td>
+                                        <td>Ana Fernández López</td>
+                                        <td>ana.fernandez@universidad.edu.ve</td>
+                                        <td>+58 412-9876543</td>
+                                        <td><span class="badge bg-danger">3 / 3</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Ana Fernández')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Ana Fernández')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-29.345.678</strong></td>
+                                        <td>José García Ramírez</td>
+                                        <td>jose.garcia@universidad.edu.ve</td>
+                                        <td>+58 416-5551234</td>
+                                        <td><span class="badge bg-success">0 / 3</span></td>
+                                        <td><span class="badge bg-danger">Suspendido</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('José García')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('José García')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-return" title="Activar">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-27.890.123</strong></td>
+                                        <td>Laura Pérez Sánchez</td>
+                                        <td>laura.perez@universidad.edu.ve</td>
+                                        <td>+58 426-3332211</td>
+                                        <td><span class="badge bg-warning">1 / 3</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Laura Pérez')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Laura Pérez')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Paginación -->
+                        <nav class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Profesores -->
+                    <div class="tab-pane fade" id="profesores">
+                        <div class="table-responsive">
+                            <table class="table table-custom table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Cédula</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Departamento</th>
+                                        <th>Préstamos Activos</th>
+                                        <th>Estado</th>
+                                        <th style="width: 200px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>V-15.234.567</strong></td>
+                                        <td>Dr. Roberto Martínez Silva</td>
+                                        <td>roberto.martinez@universidad.edu.ve</td>
+                                        <td>+58 414-7778888</td>
+                                        <td>Sociología</td>
+                                        <td><span class="badge bg-warning">3 / 5</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Dr. Roberto Martínez')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Dr. Roberto Martínez')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-14.567.890</strong></td>
+                                        <td>Dra. Carmen Díaz Rojas</td>
+                                        <td>carmen.diaz@universidad.edu.ve</td>
+                                        <td>+58 424-5556666</td>
+                                        <td>Historia</td>
+                                        <td><span class="badge bg-warning">2 / 5</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Dra. Carmen Díaz')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Dra. Carmen Díaz')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-16.890.234</strong></td>
+                                        <td>Lic. Miguel Ángel Ruiz</td>
+                                        <td>miguel.ruiz@universidad.edu.ve</td>
+                                        <td>+58 412-4443322</td>
+                                        <td>Economía</td>
+                                        <td><span class="badge bg-danger">5 / 5</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Lic. Miguel Ángel Ruiz')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Lic. Miguel Ángel Ruiz')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>V-13.456.789</strong></td>
+                                        <td>Prof. Elena Morales Castro</td>
+                                        <td>elena.morales@universidad.edu.ve</td>
+                                        <td>+58 426-9998877</td>
+                                        <td>Filosofía</td>
+                                        <td><span class="badge bg-success">0 / 5</span></td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                        <td>
+                                            <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesUsuario('Prof. Elena Morales')">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-edit" title="Editar" onclick="editarUsuario('Prof. Elena Morales')">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="action-btn action-btn-delete" title="Desactivar">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Paginación -->
+                        <nav class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nuevo Usuario -->
+    <div class="modal fade" id="nuevoUsuarioModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Agregar Nuevo Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="tipoUsuario" class="form-label">Tipo de Usuario <span class="text-danger">*</span></label>
+                                <select class="form-select" id="tipoUsuario" required>
+                                    <option value="">Seleccione...</option>
+                                    <option>Estudiante</option>
+                                    <option>Profesor</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cedula" class="form-label">Cédula de Identidad <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="cedula" required placeholder="V-12.345.678">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="nombres" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="apellidos" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="apellidos" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email" required placeholder="usuario@universidad.edu.ve">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="telefono" required placeholder="+58 414-1234567">
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="departamentoField" style="display: none;">
+                            <div class="col-md-12">
+                                <label for="departamento" class="form-label">Departamento</label>
+                                <input type="text" class="form-control" id="departamento" placeholder="Ej: Sociología, Historia, Economía...">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <textarea class="form-control" id="direccion" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom">Guardar Usuario</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Ver Detalles de Usuario -->
+    <div class="modal fade" id="detallesUsuarioModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-person-circle me-2"></i>Detalles del Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Tipo de Usuario:</strong><br>
+                            <span class="badge bg-primary mt-1">Estudiante</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Estado:</strong><br>
+                            <span class="badge bg-success mt-1">Activo</span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Cédula:</strong><br>
+                            V-27.456.789
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Nombre Completo:</strong><br>
+                            María Rodríguez González
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Email:</strong><br>
+                            maria.rodriguez@universidad.edu.ve
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Teléfono:</strong><br>
+                            +58 414-1234567
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>Dirección:</strong><br>
+                            Av. Universidad, Edificio Los Olivos, Apto 5-B, Caracas
+                        </div>
+                    </div>
+                    <hr>
+                    <h6 class="mb-3">Estadísticas de Préstamos</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="stat-value">2</div>
+                                <div class="stat-label">Préstamos Activos</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Total Histórico</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Retrasos</div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6 class="mb-3">Préstamos Activos</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Libro</th>
+                                    <th>Fecha Préstamo</th>
+                                    <th>Fecha Devolución</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>El Pensamiento Crítico en América Latina</td>
+                                    <td>01/02/2026</td>
+                                    <td>08/02/2026</td>
+                                </tr>
+                                <tr>
+                                    <td>Sociología de los Movimientos Sociales</td>
+                                    <td>03/02/2026</td>
+                                    <td>10/02/2026</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Editar Usuario -->
+    <div class="modal fade" id="editarUsuarioModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editTipoUsuario" class="form-label">Tipo de Usuario</label>
+                                <select class="form-select" id="editTipoUsuario">
+                                    <option selected>Estudiante</option>
+                                    <option>Profesor</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editCedula" class="form-label">Cédula de Identidad</label>
+                                <input type="text" class="form-control" id="editCedula" value="V-27.456.789" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editNombres" class="form-label">Nombres</label>
+                                <input type="text" class="form-control" id="editNombres" value="María">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editApellidos" class="form-label">Apellidos</label>
+                                <input type="text" class="form-control" id="editApellidos" value="Rodríguez González">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="editEmail" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="editEmail" value="maria.rodriguez@universidad.edu.ve">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editTelefono" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" id="editTelefono" value="+58 414-1234567">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="editDireccion" class="form-label">Dirección</label>
+                                <textarea class="form-control" id="editDireccion" rows="2">Av. Universidad, Edificio Los Olivos, Apto 5-B, Caracas</textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="editEstado" class="form-label">Estado del Usuario</label>
+                                <select class="form-select" id="editEstado">
+                                    <option selected>Activo</option>
+                                    <option>Suspendido</option>
+                                    <option>Inactivo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mostrar/ocultar campo de departamento según tipo de usuario
+        document.getElementById('tipoUsuario').addEventListener('change', function() {
+            const departamentoField = document.getElementById('departamentoField');
+            if (this.value === 'Profesor') {
+                departamentoField.style.display = 'block';
+            } else {
+                departamentoField.style.display = 'none';
+            }
+        });
+
+        function verDetallesUsuario(nombre) {
+            const modal = new bootstrap.Modal(document.getElementById('detallesUsuarioModal'));
+            modal.show();
+        }
+
+        function editarUsuario(nombre) {
+            const modal = new bootstrap.Modal(document.getElementById('editarUsuarioModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>
