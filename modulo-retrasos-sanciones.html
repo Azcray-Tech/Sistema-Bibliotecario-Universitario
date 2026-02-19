@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrasos y Sanciones - Sistema Bibliográfico</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/fonts.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/bootstrap.bundle.min.js" defer></script>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="modulo-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="modulo-listado-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="modulo-agregar-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="modulo-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="modulo-gestion-prestamos.html" class="menu-item">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="modulo-historial.html" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="modulo-retrasos-sanciones.html" class="menu-item active">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="modulo-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="modulo-inventario.html" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="modulo-usuarios.html" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="modulo-backup.html" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="modulo-configuracion.html" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="modulo-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2><i class="bi bi-exclamation-triangle me-2"></i>Retrasos y Sanciones</h2>
+                    <small class="text-muted">Gestión de préstamos vencidos y usuarios sancionados</small>
+                </div>
+            </div>
+
+            <!-- Alerta de Política -->
+            <div class="policy-card">
+                <h5><i class="bi bi-info-circle me-2"></i>Política de Sanciones</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="policy-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Por cada día de retraso:</strong> 2 días de suspensión
+                            </div>
+                        </div>
+                        <div class="policy-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Bloqueo automático:</strong> Al vencer el préstamo
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="policy-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Levantamiento de sanción:</strong> Al devolver el material
+                            </div>
+                        </div>
+                        <div class="policy-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <div>
+                                <strong>Contacto:</strong> Notificación automática por email
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card accent-1">
+                    <div class="stat-icon">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                    </div>
+                    <div class="stat-value text-danger">5</div>
+                    <div class="stat-label">Préstamos Retrasados</div>
+                </div>
+                <div class="stat-card accent-2">
+                    <div class="stat-icon">
+                        <i class="bi bi-person-x-fill"></i>
+                    </div>
+                    <div class="stat-value text-danger">3</div>
+                    <div class="stat-label">Usuarios Suspendidos</div>
+                </div>
+                <div class="stat-card accent-3">
+                    <div class="stat-icon">
+                        <i class="bi bi-calendar-x"></i>
+                    </div>
+                    <div class="stat-value">47</div>
+                    <div class="stat-label">Días Total de Sanción</div>
+                </div>
+                <div class="stat-card accent-4">
+                    <div class="stat-icon">
+                        <i class="bi bi-envelope-exclamation"></i>
+                    </div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Notificaciones Enviadas</div>
+                </div>
+            </div>
+
+            <!-- Préstamos Retrasados -->
+            <div class="content-card">
+                <h4 class="mb-4 text-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Préstamos Retrasados
+                </h4>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Límite</th>
+                                <th>Días de Retraso</th>
+                                <th>Días de Sanción</th>
+                                <th>Estado Usuario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-danger">
+                                <td>
+                                    <strong>José García Ramírez</strong><br>
+                                    <small class="text-muted">V-29.345.678</small><br>
+                                    <small class="text-muted">jose.garcia@universidad.edu.ve</small>
+                                </td>
+                                <td>
+                                    El Pensamiento Crítico...<br>
+                                    <small class="text-muted">ISBN: 978-3-16-148410-0</small>
+                                </td>
+                                <td>20/01/2026</td>
+                                <td>27/01/2026</td>
+                                <td>
+                                    <span class="badge bg-danger">20 días</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark">40 días</span>
+                                </td>
+                                <td><span class="badge bg-danger">Suspendido</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesSancion('José García')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-renew" title="Enviar recordatorio">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td>
+                                    <strong>Miguel Ángel Ruiz</strong><br>
+                                    <small class="text-muted">V-16.890.234</small><br>
+                                    <small class="text-muted">miguel.ruiz@universidad.edu.ve</small>
+                                </td>
+                                <td>
+                                    Sociología de los Movimientos...<br>
+                                    <small class="text-muted">ISBN: 978-0-12-345678-9</small>
+                                </td>
+                                <td>10/01/2026</td>
+                                <td>24/01/2026</td>
+                                <td>
+                                    <span class="badge bg-danger">23 días</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark">46 días</span>
+                                </td>
+                                <td><span class="badge bg-danger">Suspendido</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesSancion('Miguel Ángel Ruiz')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-renew" title="Enviar recordatorio">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td>
+                                    <strong>Pedro Ramírez Silva</strong><br>
+                                    <small class="text-muted">V-25.678.901</small><br>
+                                    <small class="text-muted">pedro.ramirez@universidad.edu.ve</small>
+                                </td>
+                                <td>
+                                    Historia Económica de América...<br>
+                                    <small class="text-muted">ISBN: 978-2-34-567890-1</small>
+                                </td>
+                                <td>05/02/2026</td>
+                                <td>12/02/2026</td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">4 días</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark">8 días</span>
+                                </td>
+                                <td><span class="badge bg-warning text-dark">Activo</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesSancion('Pedro Ramírez')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-renew" title="Enviar recordatorio">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td>
+                                    <strong>Sofía López Castro</strong><br>
+                                    <small class="text-muted">V-28.901.234</small><br>
+                                    <small class="text-muted">sofia.lopez@universidad.edu.ve</small>
+                                </td>
+                                <td>
+                                    Filosofía Latinoamericana...<br>
+                                    <small class="text-muted">ISBN: 978-3-45-678901-2</small>
+                                </td>
+                                <td>08/02/2026</td>
+                                <td>15/02/2026</td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">1 día</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark">2 días</span>
+                                </td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesSancion('Sofía López')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-renew" title="Enviar recordatorio">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="table-warning">
+                                <td>
+                                    <strong>Daniel Torres Méndez</strong><br>
+                                    <small class="text-muted">V-27.012.345</small><br>
+                                    <small class="text-muted">daniel.torres@universidad.edu.ve</small>
+                                </td>
+                                <td>
+                                    Integración y Desarrollo...<br>
+                                    <small class="text-muted">ISBN: 978-1-23-456789-7</small>
+                                </td>
+                                <td>09/02/2026</td>
+                                <td>16/02/2026</td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">0 días</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark">0 días</span>
+                                </td>
+                                <td><span class="badge bg-success">Activo</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesSancion('Daniel Torres')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="action-btn action-btn-renew" title="Enviar recordatorio">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Usuarios Suspendidos Actualmente -->
+            <div class="content-card">
+                <h4 class="mb-4 text-danger">
+                    <i class="bi bi-person-x-fill me-2"></i>Usuarios Actualmente Suspendidos
+                </h4>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Tipo</th>
+                                <th>Motivo</th>
+                                <th>Fecha Suspensión</th>
+                                <th>Días de Sanción</th>
+                                <th>Levanta Suspensión</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>José García Ramírez</strong><br>
+                                    <small class="text-muted">V-29.345.678</small><br>
+                                    <small class="text-muted">jose.garcia@universidad.edu.ve</small>
+                                </td>
+                                <td><span class="badge bg-primary">Estudiante</span></td>
+                                <td>
+                                    Retraso de 20 días<br>
+                                    <small class="text-muted">Libro: El Pensamiento Crítico...</small>
+                                </td>
+                                <td>27/01/2026</td>
+                                <td><span class="badge bg-dark">40 días</span></td>
+                                <td>08/03/2026</td>
+                                <td>
+                                    <button class="action-btn action-btn-return" title="Levantar sanción" onclick="levantarSancion('José García')">
+                                        <i class="bi bi-check-circle"></i> Levantar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Miguel Ángel Ruiz</strong><br>
+                                    <small class="text-muted">V-16.890.234</small><br>
+                                    <small class="text-muted">miguel.ruiz@universidad.edu.ve</small>
+                                </td>
+                                <td><span class="badge bg-info">Profesor</span></td>
+                                <td>
+                                    Retraso de 23 días<br>
+                                    <small class="text-muted">Libro: Sociología de los Movimientos...</small>
+                                </td>
+                                <td>24/01/2026</td>
+                                <td><span class="badge bg-dark">46 días</span></td>
+                                <td>11/03/2026</td>
+                                <td>
+                                    <button class="action-btn action-btn-return" title="Levantar sanción" onclick="levantarSancion('Miguel Ángel Ruiz')">
+                                        <i class="bi bi-check-circle"></i> Levantar
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Andrea Gómez Paredes</strong><br>
+                                    <small class="text-muted">V-26.345.678</small><br>
+                                    <small class="text-muted">andrea.gomez@universidad.edu.ve</small>
+                                </td>
+                                <td><span class="badge bg-primary">Estudiante</span></td>
+                                <td>
+                                    Retraso de 7 días<br>
+                                    <small class="text-muted">Libro: Revista de Integración N°42</small>
+                                </td>
+                                <td>05/02/2026</td>
+                                <td><span class="badge bg-dark">14 días</span></td>
+                                <td>19/02/2026</td>
+                                <td>
+                                    <button class="action-btn action-btn-return" title="Levantar sanción" onclick="levantarSancion('Andrea Gómez')">
+                                        <i class="bi bi-check-circle"></i> Levantar
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Historial de Sanciones Levantadas -->
+            <div class="content-card">
+                <h4 class="mb-4">
+                    <i class="bi bi-clock-history me-2"></i>Historial de Sanciones Levantadas (Últimos 30 días)
+                </h4>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Motivo</th>
+                                <th>Días de Sanción</th>
+                                <th>Fecha Suspensión</th>
+                                <th>Fecha Levantamiento</th>
+                                <th>Levantado Por</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Laura Pérez Sánchez</strong><br>
+                                    <small class="text-muted">V-27.890.123</small>
+                                </td>
+                                <td>Retraso de 3 días</td>
+                                <td><span class="badge bg-secondary">6 días</span></td>
+                                <td>01/02/2026</td>
+                                <td>05/02/2026</td>
+                                <td>Admin - Sistema</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Carlos Méndez Torres</strong><br>
+                                    <small class="text-muted">V-28.123.456</small>
+                                </td>
+                                <td>Retraso de 5 días</td>
+                                <td><span class="badge bg-secondary">10 días</span></td>
+                                <td>25/01/2026</td>
+                                <td>30/01/2026</td>
+                                <td>Admin - Sistema</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Elena Morales Castro</strong><br>
+                                    <small class="text-muted">V-13.456.789</small>
+                                </td>
+                                <td>Retraso de 2 días</td>
+                                <td><span class="badge bg-secondary">4 días</span></td>
+                                <td>20/01/2026</td>
+                                <td>22/01/2026</td>
+                                <td>Admin - Sistema</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalles de la Sanción -->
+    <div class="modal fade" id="detallesSancionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Detalles de la Sanción</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <strong><i class="bi bi-info-circle me-2"></i>Estado:</strong> Usuario suspendido por retraso en la devolución
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-danger"><i class="bi bi-person-circle me-2"></i>Información del Usuario</h6>
+                            <p class="mb-1"><strong>Nombre:</strong> José García Ramírez</p>
+                            <p class="mb-1"><strong>Cédula:</strong> V-29.345.678</p>
+                            <p class="mb-1"><strong>Tipo:</strong> Estudiante</p>
+                            <p class="mb-1"><strong>Email:</strong> jose.garcia@universidad.edu.ve</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-danger"><i class="bi bi-book me-2"></i>Material en Retraso</h6>
+                            <p class="mb-1"><strong>Libro:</strong> El Pensamiento Crítico en América Latina</p>
+                            <p class="mb-1"><strong>ISBN:</strong> 978-3-16-148410-0</p>
+                            <p class="mb-1"><strong>Fecha Límite:</strong> 27/01/2026</p>
+                            <p class="mb-1"><strong>Días de Retraso:</strong> <span class="badge bg-danger">20 días</span></p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6 class="text-danger"><i class="bi bi-calendar-x me-2"></i>Detalles de la Sanción</h6>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1"><strong>Días de Sanción:</strong></p>
+                            <p><span class="badge bg-dark fs-5">40 días</span></p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1"><strong>Fecha de Suspensión:</strong></p>
+                            <p>27 de Enero de 2026</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1"><strong>Levanta Suspensión:</strong></p>
+                            <p>08 de Marzo de 2026</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="text-danger"><i class="bi bi-envelope me-2"></i>Notificaciones Enviadas</h6>
+                            <ul>
+                                <li>28/01/2026 - Primer recordatorio de devolución</li>
+                                <li>03/02/2026 - Segundo recordatorio de devolución</li>
+                                <li>10/02/2026 - Notificación de suspensión activa</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="enviarRecordatorio()">
+                        <i class="bi bi-envelope me-2"></i>Enviar Recordatorio
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="levantarSancion('José García')">
+                        <i class="bi bi-check-circle me-2"></i>Levantar Sanción
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmar Levantamiento de Sanción -->
+    <div class="modal fade" id="confirmarLevantarModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-question-circle me-2"></i>Confirmar Levantamiento de Sanción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro que desea levantar la sanción del usuario antes del tiempo establecido?</p>
+                    <p class="mb-0"><strong>Nota:</strong> Esta acción quedará registrada en el historial.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success">Confirmar Levantamiento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function verDetallesSancion(nombre) {
+            const modal = new bootstrap.Modal(document.getElementById('detallesSancionModal'));
+            modal.show();
+        }
+
+        function levantarSancion(nombre) {
+            const modal = new bootstrap.Modal(document.getElementById('confirmarLevantarModal'));
+            modal.show();
+        }
+
+        function enviarRecordatorio() {
+            alert('Recordatorio enviado exitosamente al correo del usuario.');
+        }
+    </script>
+</body>
+</html>

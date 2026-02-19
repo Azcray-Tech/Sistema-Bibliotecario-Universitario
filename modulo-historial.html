@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Préstamos - Sistema Bibliográfico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+                <div class="user-info">
+                    <i class="bi bi-person-circle me-1"></i>Admin - Biblioteca Central
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-section">Panel Principal</div>
+                <a href="modulo-dashboard-admin.html" class="menu-item">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <div class="menu-section">Gestión de Contenido</div>
+                <a href="modulo-listado-libros.html" class="menu-item">
+                    <i class="bi bi-book"></i>
+                    <span>Libros y Materiales</span>
+                </a>
+                <a href="modulo-agregar-libros.html" class="menu-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar Libro</span>
+                </a>
+                <a href="modulo-categorias.html" class="menu-item">
+                    <i class="bi bi-tags"></i>
+                    <span>Categorías</span>
+                </a>
+
+                <div class="menu-section">Préstamos</div>
+                <a href="modulo-gestion-prestamos.html" class="menu-item active">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Gestión de Préstamos</span>
+                </a>
+                <a href="modulo-historial.html" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="modulo-retrasos-sanciones.html" class="menu-item">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span>Retrasos y Sanciones</span>
+                </a>
+
+                <div class="menu-section">Reportes</div>
+                <a href="modulo-informes.html" class="menu-item">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>Generar Informes</span>
+                </a>
+                <a href="modulo-inventario.html" class="menu-item">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Inventario</span>
+                </a>
+
+                <div class="menu-section">Sistema</div>
+                <a href="modulo-usuarios.html" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="modulo-backup.html" class="menu-item">
+                    <i class="bi bi-database"></i>
+                    <span>Backup</span>
+                </a>
+                <a href="modulo-configuracion.html" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </div>
+
+            <a href="modulo-login.html" class="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div>
+                    <h2><i class="bi bi-clock-history me-2"></i>Historial de Préstamos</h2>
+                    <small class="text-muted">Registro completo de todos los préstamos realizados</small>
+                </div>
+            </div>
+
+            <!-- Estadísticas Rápidas -->
+            <div class="stats-grid">
+                <div class="stat-card accent-1">
+                    <div class="stat-icon">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <div class="stat-value">1,847</div>
+                    <div class="stat-label">Total Préstamos</div>
+                </div>
+                <div class="stat-card accent-2">
+                    <div class="stat-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div class="stat-value">1,809</div>
+                    <div class="stat-label">Devueltos</div>
+                </div>
+                <div class="stat-card accent-3">
+                    <div class="stat-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="stat-value">38</div>
+                    <div class="stat-label">En Curso</div>
+                </div>
+                <div class="stat-card accent-4">
+                    <div class="stat-icon">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                    </div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Con Retraso</div>
+                </div>
+            </div>
+
+            <!-- Filtros Avanzados -->
+            <div class="filters-card">
+                <h5 class="mb-3"><i class="bi bi-funnel me-2"></i>Filtros de Búsqueda</h5>
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Usuario (Nombre o Cédula)</label>
+                            <input type="text" class="form-control" placeholder="Buscar usuario...">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Libro (Título o ISBN)</label>
+                            <input type="text" class="form-control" placeholder="Buscar libro...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Estado</label>
+                            <select class="form-select">
+                                <option value="">Todos</option>
+                                <option>En Curso</option>
+                                <option>Devuelto</option>
+                                <option>Retrasado</option>
+                                <option>Renovado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Desde</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Hasta</label>
+                            <input type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-12 text-end">
+                            <button type="button" class="btn btn-secondary">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Limpiar
+                            </button>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="bi bi-search me-2"></i>Buscar
+                            </button>
+                            <button type="button" class="btn btn-success">
+                                <i class="bi bi-file-excel me-2"></i>Exportar a Excel
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabla de Historial -->
+            <div class="content-card">
+                <h4 class="mb-4">Registro Completo (Mostrando 20 de 1,847)</h4>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">ID</th>
+                                <th>Usuario</th>
+                                <th>Libro</th>
+                                <th>Fecha Préstamo</th>
+                                <th>Fecha Devolución</th>
+                                <th>Fecha Devuelto</th>
+                                <th>Renovaciones</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#1847</strong></td>
+                                <td>
+                                    María Rodríguez<br>
+                                    <small class="text-muted">V-27.456.789</small>
+                                </td>
+                                <td>
+                                    El Pensamiento Crítico...<br>
+                                    <small class="text-muted">978-3-16-148410-0</small>
+                                </td>
+                                <td>01/02/2026</td>
+                                <td>08/02/2026</td>
+                                <td><span class="text-muted">-</span></td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-warning">En Curso</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1847)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1846</strong></td>
+                                <td>
+                                    Carlos Méndez<br>
+                                    <small class="text-muted">V-28.123.456</small>
+                                </td>
+                                <td>
+                                    Sociología de los Movimientos...<br>
+                                    <small class="text-muted">978-0-12-345678-9</small>
+                                </td>
+                                <td>30/01/2026</td>
+                                <td>06/02/2026</td>
+                                <td>05/02/2026</td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-success">Devuelto</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1846)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1845</strong></td>
+                                <td>
+                                    Ana Fernández<br>
+                                    <small class="text-muted">V-26.789.012</small>
+                                </td>
+                                <td>
+                                    Historia Económica de América...<br>
+                                    <small class="text-muted">978-2-34-567890-1</small>
+                                </td>
+                                <td>28/01/2026</td>
+                                <td>04/02/2026</td>
+                                <td><span class="text-muted">-</span></td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-warning">En Curso</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1845)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1844</strong></td>
+                                <td>
+                                    José García<br>
+                                    <small class="text-muted">V-29.345.678</small>
+                                </td>
+                                <td>
+                                    Filosofía Latinoamericana...<br>
+                                    <small class="text-muted">978-3-45-678901-2</small>
+                                </td>
+                                <td>20/01/2026</td>
+                                <td>27/01/2026</td>
+                                <td>03/02/2026</td>
+                                <td><span class="badge bg-warning">1</span></td>
+                                <td><span class="badge bg-danger">Devuelto con Retraso</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1844)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1843</strong></td>
+                                <td>
+                                    Dr. Roberto Martínez<br>
+                                    <small class="text-muted">V-15.234.567</small>
+                                </td>
+                                <td>
+                                    Integración y Desarrollo...<br>
+                                    <small class="text-muted">978-1-23-456789-7</small>
+                                </td>
+                                <td>25/01/2026</td>
+                                <td>08/02/2026</td>
+                                <td><span class="text-muted">-</span></td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-warning">En Curso</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1843)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1842</strong></td>
+                                <td>
+                                    Laura Pérez<br>
+                                    <small class="text-muted">V-27.890.123</small>
+                                </td>
+                                <td>
+                                    Revista de Integración N°42<br>
+                                    <small class="text-muted">978-4-56-789012-3</small>
+                                </td>
+                                <td>18/01/2026</td>
+                                <td>25/01/2026</td>
+                                <td>24/01/2026</td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-success">Devuelto</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1842)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1841</strong></td>
+                                <td>
+                                    Dra. Carmen Díaz<br>
+                                    <small class="text-muted">V-14.567.890</small>
+                                </td>
+                                <td>
+                                    Tesis: Políticas Públicas...<br>
+                                    <small class="text-muted">978-5-67-890123-4</small>
+                                </td>
+                                <td>15/01/2026</td>
+                                <td>29/01/2026</td>
+                                <td>28/01/2026</td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-success">Devuelto</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1841)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1840</strong></td>
+                                <td>
+                                    Miguel Ángel Ruiz<br>
+                                    <small class="text-muted">V-16.890.234</small>
+                                </td>
+                                <td>
+                                    El Pensamiento Crítico...<br>
+                                    <small class="text-muted">978-3-16-148410-0</small>
+                                </td>
+                                <td>10/01/2026</td>
+                                <td>24/01/2026</td>
+                                <td><span class="text-muted">-</span></td>
+                                <td><span class="badge bg-warning">1</span></td>
+                                <td><span class="badge bg-danger">Retrasado</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1840)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1839</strong></td>
+                                <td>
+                                    Elena Morales<br>
+                                    <small class="text-muted">V-13.456.789</small>
+                                </td>
+                                <td>
+                                    Historia Económica...<br>
+                                    <small class="text-muted">978-2-34-567890-1</small>
+                                </td>
+                                <td>08/01/2026</td>
+                                <td>22/01/2026</td>
+                                <td>20/01/2026</td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-success">Devuelto</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1839)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#1838</strong></td>
+                                <td>
+                                    María Rodríguez<br>
+                                    <small class="text-muted">V-27.456.789</small>
+                                </td>
+                                <td>
+                                    Sociología de los Movimientos...<br>
+                                    <small class="text-muted">978-0-12-345678-9</small>
+                                </td>
+                                <td>05/01/2026</td>
+                                <td>12/01/2026</td>
+                                <td>11/01/2026</td>
+                                <td><span class="badge bg-info">0</span></td>
+                                <td><span class="badge bg-success">Devuelto</span></td>
+                                <td>
+                                    <button class="action-btn action-btn-view" title="Ver detalles" onclick="verDetallesPrestamo(1838)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalles del Préstamo -->
+    <div class="modal fade" id="detallesPrestamoModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Detalles del Préstamo #1847</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-primary"><i class="bi bi-person-circle me-2"></i>Información del Usuario</h6>
+                            <p class="mb-1"><strong>Nombre:</strong> María Rodríguez González</p>
+                            <p class="mb-1"><strong>Cédula:</strong> V-27.456.789</p>
+                            <p class="mb-1"><strong>Tipo:</strong> Estudiante</p>
+                            <p class="mb-1"><strong>Email:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d2bfb3a0bbb3fca0bdb6a0bbb5a7b7a892a7bcbba4b7a0a1bbb6b3b6fcb7b6a7fca4b7">[email&#160;protected]</a></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary"><i class="bi bi-book me-2"></i>Información del Libro</h6>
+                            <p class="mb-1"><strong>Título:</strong> El Pensamiento Crítico en América Latina</p>
+                            <p class="mb-1"><strong>Autor:</strong> Pablo Coello Martínez</p>
+                            <p class="mb-1"><strong>ISBN:</strong> 978-3-16-148410-0</p>
+                            <p class="mb-1"><strong>Ubicación:</strong> 3A-FIL-045</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6 class="text-primary"><i class="bi bi-calendar-event me-2"></i>Fechas y Estado</h6>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1"><strong>Fecha de Préstamo:</strong></p>
+                            <p>01 de Febrero de 2026</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1"><strong>Fecha de Devolución:</strong></p>
+                            <p>08 de Febrero de 2026</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="mb-1"><strong>Estado:</strong></p>
+                            <span class="badge bg-warning">En Curso</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="text-primary"><i class="bi bi-arrow-repeat me-2"></i>Historial de Renovaciones</h6>
+                            <p class="text-muted">No se han realizado renovaciones para este préstamo.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap

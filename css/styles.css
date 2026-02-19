@@ -638,7 +638,7 @@ textarea.form-control {
     border-left: 4px solid var(--color-accent);
     padding: 1.5rem;
     border-radius: 8px;
-    margin-top: 2rem;
+    margin-top: 0rem;
 }
 
 .actra-section h5 {

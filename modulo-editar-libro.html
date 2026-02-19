@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Libros - Sistema Bibliográfico</title>
+    <title>Editar Libro - Sistema Bibliográfico</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="icons/bootstrap-icons.css" rel="stylesheet">
     <link href="css/fonts.css" rel="stylesheet">
@@ -29,21 +29,21 @@
                 </a>
 
                 <div class="menu-section">Gestión de Contenido</div>
-                <a href="05-listado-libros.html" class="menu-item">
+                <a href="#" class="menu-item active">
                     <i class="bi bi-book"></i>
                     <span>Libros y Materiales</span>
                 </a>
-                <a href="06-agregar-libros.html" class="menu-item active">
+                <a href="#" class="menu-item">
                     <i class="bi bi-plus-circle"></i>
                     <span>Agregar Libro</span>
                 </a>
-                <a href="07-categorias.html" class="menu-item">
+                <a href="#" class="menu-item">
                     <i class="bi bi-tags"></i>
                     <span>Categorías</span>
                 </a>
 
                 <div class="menu-section">Préstamos</div>
-                <a href="08-gestion-prestamos.html" class="menu-item">
+                <a href="06-gestion-prestamos.html" class="menu-item">
                     <i class="bi bi-arrow-left-right"></i>
                     <span>Gestión de Préstamos</span>
                 </a>
@@ -51,27 +51,23 @@
                     <i class="bi bi-clock-history"></i>
                     <span>Historial</span>
                 </a>
-                <a href="#" class="menu-item">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <span>Retrasos y Sanciones</span>
-                </a>
 
                 <div class="menu-section">Reportes</div>
-                <a href="11-informes.html" class="menu-item">
+                <a href="07-informes.html" class="menu-item">
                     <i class="bi bi-file-earmark-bar-graph"></i>
                     <span>Generar Informes</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="modulo-inventario.html" class="menu-item">
                     <i class="bi bi-box-seam"></i>
                     <span>Inventario</span>
                 </a>
 
                 <div class="menu-section">Sistema</div>
-                <a href="13-backup.html" class="menu-item">
+                <a href="#" class="menu-item">
                     <i class="bi bi-database"></i>
                     <span>Backup</span>
                 </a>
-                <a href="14-configuracion.html" class="menu-item">
+                <a href="#" class="menu-item">
                     <i class="bi bi-gear"></i>
                     <span>Configuración</span>
                 </a>
@@ -86,8 +82,8 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="top-bar">
-                <h2><i class="bi bi-plus-circle me-2"></i>Agregar Nuevo Libro o Material</h2>
-                <small class="text-muted">Complete todos los campos requeridos para registrar el material</small>
+                <h2><i class="bi bi-pencil-square me-2"></i>Editar Libro o Material</h2>
+                <small class="text-muted">Modifique la información del material seleccionado</small>
             </div>
 
             <div class="form-container">
@@ -100,7 +96,7 @@
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <label for="titulo" class="form-label">Título <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="titulo" required placeholder="Ingrese el título completo del libro">
+                            <input type="text" class="form-control" id="titulo" required placeholder="Ingrese el título completo del libro" value="El Pensamiento Crítico en América Latina">
                         </div>
                         <div class="col-md-4">
                             <label for="tipoMaterial" class="form-label">Tipo de Material <span class="text-danger">*</span></label>
@@ -117,7 +113,7 @@
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <label for="autores" class="form-label">Autor(es) <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="autores" required placeholder="Nombre completo del autor o autores">
+                            <input type="text" class="form-control" id="autores" required placeholder="Nombre completo del autor o autores" value="Pablo Coello Martínez">
                             <div class="form-text">Puede separar múltiples autores con comas</div>
                         </div>
                         <div class="col-md-4">
@@ -209,11 +205,11 @@
 
                     <!-- Botones de Acción -->
                     <div class="d-flex gap-3 justify-content-end mt-5">
-                        <button type="button" class="btn btn-secondary-custom">
+                        <button type="button" class="btn btn-secondary-custom" onclick="window.location.href='08-listado-libros.html'">
                             <i class="bi bi-x-lg me-2"></i>Cancelar
                         </button>
                         <button type="submit" class="btn btn-primary-custom">
-                            <i class="bi bi-save me-2"></i>Guardar Libro
+                            <i class="bi bi-check-lg me-2"></i>Actualizar Libro
                         </button>
                     </div>
                 </form>
