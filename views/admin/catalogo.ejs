@@ -72,23 +72,25 @@
                                     </div>
                                 <% } %>
                             </td>
-                            <td><strong><%= m.titulo %></strong></td>
-                            <td><small><%= autoresStr %></small></td>
-                            <td><small><%= codigoStr %></small></td>
-                            <td><span class="badge bg-secondary"><%= m.tipo %></span></td>
-                            <td><span class="badge-category"><%= m.categoria %></span></td>
-                            <td>
+                            <td class="align-middle"><strong><%= m.titulo %></strong></td>
+                            <td class="align-middle"><small><%= autoresStr %></small></td>
+                            <td class="align-middle"><small><%= codigoStr %></small></td>
+                            <td class="align-middle"><span class="badge bg-secondary"><%= m.tipo %></span></td>
+                            <td class="align-middle"><span class="badge-category"><%= m.categoria %></span></td>
+                            <td class="align-middle">
                                 <span class="badge <%= m.stock > 0 ? 'bg-success' : 'bg-danger' %>">
                                     <%= m.stock %> / <%= m.total_ejemplares %>
                                 </span>
                             </td>
-                            <td>
-                                <a href="/material/<%= m.id %>" class="btn btn-sm btn-outline-info me-1" target="_blank" title="Ver ficha pública"><i class="bi bi-eye"></i></a>
-                                <a href="/admin/catalogo/<%= m.id %>/editar" class="btn btn-sm btn-outline-primary me-1" title="Editar"><i class="bi bi-pencil"></i></a>
-                                <form method="POST" action="/admin/catalogo/<%= m.id %>/eliminar" style="display:inline;"
-                                      onsubmit="return confirm('¿Eliminar «<%= m.titulo.replace(/'/g, '') %>» y todos sus ejemplares?')">
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
-                                </form>
+                            <td class="align-middle">
+                                <div class="d-flex gap-1">
+                                    <a href="/material/<%= m.id %>" class="btn btn-sm btn-outline-info" target="_blank" title="Ver ficha pública"><i class="bi bi-eye"></i></a>
+                                    <a href="/admin/catalogo/<%= m.id %>/editar" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+                                    <form method="POST" action="/admin/catalogo/<%= m.id %>/eliminar" style="display:inline;"
+                                          onsubmit="return confirm('¿Eliminar «<%= m.titulo.replace(/'/g, '') %>» y todos sus ejemplares?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         <% }) %>
