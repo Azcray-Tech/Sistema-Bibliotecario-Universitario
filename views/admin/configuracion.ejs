@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Configuración - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'configuracion'}) %>
+    <div class="main-content">
+        <div class="top-bar"><h2><i class="bi bi-gear me-2"></i>Configuración del Sistema</h2></div>
+        <div class="content-card">
+            <h5>Parámetros actuales</h5>
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead><tr><th>Parámetro</th><th>Valor</th><th>Descripción</th></tr></thead>
+                    <tbody>
+                        <tr><td>Días de préstamo</td><td><strong>14</strong></td><td>Plazo estándar de devolución</td></tr>
+                        <tr><td>Días de renovación</td><td><strong>7</strong></td><td>Extensión por renovación única</td></tr>
+                        <tr><td>Factor de sanción</td><td><strong>×2</strong></td><td>Días de suspensión = días retraso × 2</td></tr>
+                        <tr><td>Tamaño máx. portada</td><td><strong>200 KB</strong></td><td>Límite de subida de imágenes</td></tr>
+                        <tr><td>Dimensiones portada</td><td><strong>300×400 px</strong></td><td>Redimensionado automático</td></tr>
+                        <tr><td>Sesión admin</td><td><strong>8 horas</strong></td><td>Tiempo de inactividad antes de logout</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info mt-3"><i class="bi bi-info-circle me-2"></i>Para modificar estos parámetros edite los servicios correspondientes en <code>services/prestamoService.js</code> e <code>imagenService.js</code>.</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

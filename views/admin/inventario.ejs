@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Inventario - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'inventario'}) %>
+    <div class="main-content">
+        <div class="top-bar">
+            <h2><i class="bi bi-box-seam me-2"></i>Inventario</h2>
+            <div class="d-flex gap-2">
+                <a href="/admin/reportes/libros/pdf" class="btn btn-primary-custom btn-sm"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</a>
+                <a href="/admin/reportes/libros/excel" class="btn btn-primary-custom btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="table-responsive">
+                <table class="table inventory-table">
+                    <thead>
+                        <tr><th>Categoría</th><th>Títulos</th><th>Ejemplares</th><th>En Préstamo</th><th>Disponibles</th></tr>
+                    </thead>
+                    <tbody>
+                        <% let totalTitulos=0, totalStock=0, totalPrestados=0;
+                           inventario.forEach(row => {
+                               totalTitulos+=row.titulos; totalStock+=row.stock; totalPrestados+=row.prestados; %>
+                        <tr>
+                            <td><strong><%= row.categoria %></strong></td>
+                            <td><%= row.titulos %></td>
+                            <td><%= row.stock %></td>
+                            <td><%= row.prestados %></td>
+                            <td><%= row.stock - row.prestados %></td>
+                        </tr>
+                        <% }) %>
+                        <tr class="inventory-total">
+                            <td>TOTAL GENERAL</td>
+                            <td><%= totalTitulos %></td>
+                            <td><%= totalStock %></td>
+                            <td><%= totalPrestados %></td>
+                            <td><%= totalStock - totalPrestados %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

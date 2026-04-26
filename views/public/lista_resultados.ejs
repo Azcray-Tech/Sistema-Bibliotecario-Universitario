@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Resultados - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/navbar_public') %>
+<div class="hero-search" style="padding:2rem 0;">
+    <div class="container text-center">
+        <h2>Catálogo Bibliográfico</h2>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="search-container">
+        <form action="/buscar" method="GET">
+            <div class="row g-3">
+                <div class="col-md-10">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar..." value="<%= query.q || '' %>">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-search w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-4">
+        <div class="results-header">
+            <div>
+                <h4 class="mb-0">Resultados de búsqueda</h4>
+                <small class="text-muted">Se encontraron <%= total %> resultado(s)</small>
+            </div>
+        </div>
+
+        <% if (materiales.length === 0) { %>
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-search" style="font-size:3rem;"></i>
+                <p class="mt-3">No se encontraron resultados para su búsqueda.</p>
+                <a href="/" class="btn btn-primary-custom mt-2">Nueva búsqueda</a>
+            </div>
+        <% } %>
+
+        <% materiales.forEach(m => { %>
+        <div class="book-item" onclick="window.location.href='/material/<%= m.id %>'">
+            <% if (m.portada) { %>
+                <img src="<%= m.portada %>" alt="Portada" class="book-thumbnail">
+            <% } else { %>
+                <div class="book-thumbnail d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-book" style="font-size:2rem;color:#aaa;"></i>
+                </div>
+            <% } %>
+            <div class="book-info">
+                <div class="book-title"><%= m.titulo %></div>
+                <div class="book-author"><%= m.autor %></div>
+                <div class="book-meta">
+                    <% if (m.isbn) { %><span><i class="bi bi-upc-scan me-1"></i>ISBN: <%= m.isbn %></span><% } %>
+                    <% if (m.ubicacion) { %><span><i class="bi bi-geo-alt me-1"></i><%= m.ubicacion %></span><% } %>
+                </div>
+                <div class="mt-2">
+                    <span class="badge-category"><%= m.categoria %></span>
+                    <% if (m.stock > 0) { %>
+                        <span class="badge-available ms-2">Disponible (<%= m.stock %> <%= m.stock===1?'copia':'copias' %>)</span>
+                    <% } else { %>
+                        <span class="ms-2" style="color:#dc3545;font-weight:600;">No disponible</span>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+
+        <% if (pages > 1) { %>
+        <nav class="pagination-custom">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <%= page<=1?'disabled':'' %>">
+                    <a class="page-link" href="/buscar?<%= new URLSearchParams({...query, page: page-1}) %>"><i class="bi bi-chevron-left"></i></a>
+                </li>
+                <% for(let i=1;i<=pages;i++) { %>
+                    <li class="page-item <%= i===page?'active':'' %>">
+                        <a class="page-link" href="/buscar?<%= new URLSearchParams({...query, page: i}) %>"><%= i %></a>
+                    </li>
+                <% } %>
+                <li class="page-item <%= page>=pages?'disabled':'' %>">
+                    <a class="page-link" href="/buscar?<%= new URLSearchParams({...query, page: page+1}) %>"><i class="bi bi-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+        <% } %>
+    </div>
+</div>
+<div style="height:4rem;"></div>
+</body>
+</html>

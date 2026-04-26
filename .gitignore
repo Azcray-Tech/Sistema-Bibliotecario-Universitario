@@ -1,2 +1,8 @@
-Nuevo Text Document.txt
-diagramas-uml/
+documentos/
+node_modules/
+.env
+.env.local
+backup/
+public/images/covers/
+uploads/
+.cursor/

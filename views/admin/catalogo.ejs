@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Catálogo - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'catalogo'}) %>
+    <div class="main-content">
+        <div class="top-bar">
+            <div><h2><i class="bi bi-book me-2"></i>Biblioteca</h2></div>
+            <a href="/admin/catalogo/nuevo" class="btn btn-primary-custom"><i class="bi bi-plus-lg me-2"></i>Agregar Material</a>
+        </div>
+        <div class="content-card">
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <input type="text" id="filtro" class="form-control" placeholder="Filtrar por título, autor, ISBN...">
+                </div>
+                <div class="col-md-3">
+                    <select id="filtroTipo" class="form-select">
+                        <option value="">Todos los tipos</option>
+                        <option value="libro">Libro</option>
+                        <option value="revista">Revista</option>
+                        <option value="tesis">Tesis</option>
+                        <option value="anuario">Anuario</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="ordenar" class="form-select">
+                        <option value="recientes">Más recientes primero</option>
+                        <option value="titulo_az">Título A → Z</option>
+                        <option value="titulo_za">Título Z → A</option>
+                        <option value="stock_asc">Menor stock</option>
+                        <option value="stock_desc">Mayor stock</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-custom" id="tablaLibros">
+                    <thead>
+                        <tr>
+                            <th>Portada</th>
+                            <th>Título</th>
+                            <th>Autor(es)</th>
+                            <th>ISBN / ISSN</th>
+                            <th>Tipo</th>
+                            <th>Categoría</th>
+                            <th>Disponibles</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% materiales.forEach(m => {
+                            const autoresArr = (m.libro && m.libro.autores && m.libro.autores.length)
+                                ? m.libro.autores
+                                : (m.tesis && m.tesis.autores && m.tesis.autores.length ? m.tesis.autores : []);
+                            const autoresStr = autoresArr.map(a => a.nombre).join(', ') || '-';
+                            const codigoStr  = (m.libro && m.libro.isbn) ? m.libro.isbn
+                                             : (m.revista && m.revista.issn) ? m.revista.issn : '-';
+                        %>
+                        <tr data-tipo="<%= m.tipo %>"
+                            data-titulo="<%= m.titulo.toLowerCase() %>"
+                            data-autor="<%= autoresStr.toLowerCase() %>"
+                            data-isbn="<%= codigoStr.toLowerCase() %>"
+                            data-stock="<%= m.stock %>"
+                            data-fecha="<%= m.createdAt %>">
+                            <td>
+                                <% if (m.portada) { %>
+                                    <img src="<%= m.portada %>" style="width:40px;height:55px;object-fit:cover;border-radius:4px;">
+                                <% } else { %>
+                                    <div style="width:40px;height:55px;background:#eee;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                                        <i class="bi bi-book text-muted"></i>
+                                    </div>
+                                <% } %>
+                            </td>
+                            <td><strong><%= m.titulo %></strong></td>
+                            <td><small><%= autoresStr %></small></td>
+                            <td><small><%= codigoStr %></small></td>
+                            <td><span class="badge bg-secondary"><%= m.tipo %></span></td>
+                            <td><span class="badge-category"><%= m.categoria %></span></td>
+                            <td>
+                                <span class="badge <%= m.stock > 0 ? 'bg-success' : 'bg-danger' %>">
+                                    <%= m.stock %> / <%= m.total_ejemplares %>
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/material/<%= m.id %>" class="btn btn-sm btn-outline-info me-1" target="_blank" title="Ver ficha pública"><i class="bi bi-eye"></i></a>
+                                <a href="/admin/catalogo/<%= m.id %>/editar" class="btn btn-sm btn-outline-primary me-1" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <form method="POST" action="/admin/catalogo/<%= m.id %>/eliminar" style="display:inline;"
+                                      onsubmit="return confirm('¿Eliminar «<%= m.titulo.replace(/'/g, '') %>» y todos sus ejemplares?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-muted mt-2" id="contadorResultados"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const tbody   = document.querySelector('#tablaLibros tbody');
+const filas   = () => Array.from(tbody.querySelectorAll('tr'));
+
+function aplicar() {
+    const txt  = document.getElementById('filtro').value.toLowerCase();
+    const tipo = document.getElementById('filtroTipo').value;
+    const ord  = document.getElementById('ordenar').value;
+
+    // 1 — Filtrar
+    let visibles = filas().filter(row => {
+        const matchTxt  = !txt  || row.dataset.titulo.includes(txt) || row.dataset.autor.includes(txt) || row.dataset.isbn.includes(txt);
+        const matchTipo = !tipo || row.dataset.tipo === tipo;
+        row.style.display = matchTxt && matchTipo ? '' : 'none';
+        return matchTxt && matchTipo;
+    });
+
+    // 2 — Ordenar
+    visibles.sort((a, b) => {
+        if (ord === 'titulo_az')   return a.dataset.titulo.localeCompare(b.dataset.titulo);
+        if (ord === 'titulo_za')   return b.dataset.titulo.localeCompare(a.dataset.titulo);
+        if (ord === 'stock_asc')   return parseInt(a.dataset.stock) - parseInt(b.dataset.stock);
+        if (ord === 'stock_desc')  return parseInt(b.dataset.stock) - parseInt(a.dataset.stock);
+        // recientes: orden por fecha descendente (default)
+        return new Date(b.dataset.fecha) - new Date(a.dataset.fecha);
+    });
+
+    // 3 — Reordenar en el DOM
+    visibles.forEach(row => tbody.appendChild(row));
+
+    // 4 — Contador
+    document.getElementById('contadorResultados').textContent =
+        visibles.length + ' de ' + filas().length + ' materiales';
+}
+
+document.getElementById('filtro').addEventListener('input', aplicar);
+document.getElementById('filtroTipo').addEventListener('change', aplicar);
+document.getElementById('ordenar').addEventListener('change', aplicar);
+
+// Aplicar orden inicial (recientes primero)
+aplicar();
+</script>
+</body>
+</html>

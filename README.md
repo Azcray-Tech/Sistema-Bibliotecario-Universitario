@@ -1,151 +1,92 @@
-# Sistema de Control Bibliográfico - Concepto Visual
+# Sistema Bibliotecario — PWA Local LAN
 
-## Descripción del Proyecto
+Sistema de gestión bibliotecaria con acceso desde red local (LAN). Administra materiales, préstamos, usuarios y genera reportes.
 
-Este conjunto de pantallas representa el concepto visual completo para el Sistema de Control Bibliográfico de la Biblioteca Especializada en Integración Latinoamericana.
+## Requisitos
 
-## Pantallas Incluidas
+- **Node.js** 18+
+- **MariaDB** 10.6+ o **MySQL** 8.0+
+- **mysqldump** (incluido en instalación de MySQL/MariaDB)
 
-### 1. **01-login.html** - Página de Login
-- Diseño profesional con dos columnas
-- Panel izquierdo con información institucional
-- Formulario de acceso con validación de contraseñas seguras
-- Link a consulta pública para usuarios no administrativos
+## Instalación
 
-### 2. **02-consulta-publica.html** - Módulo de Consulta Pública
-- Búsqueda general y avanzada con tabs
-- Filtros por título, autor, ISBN y categoría
-- Resultados con miniaturas de portada
-- Categorías rápidas para acceso directo
-- Diseño optimizado para usuarios finales
+```bash
+# Instalar dependencias
+npm install
 
-### 3. **03-ficha-libro.html** - Detalle del Libro
-- Vista completa de la información del libro
-- Imagen de portada destacada
-- Todos los campos requeridos: ISBN, ACTRA, ubicación, etc.
-- Panel de disponibilidad
-- Sección para resumen/ACTRA
-- Enlace a material digital cuando aplique
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con las credenciales de la base de datos
 
-### 4. **04-dashboard-admin.html** - Panel Administrativo Principal
-- Sidebar de navegación con todas las secciones
-- Tarjetas de estadísticas (libros, préstamos, usuarios)
-- Actividad reciente
-- Acciones rápidas
-- Gráficos de estadísticas por categoría
-
-### 5. **05-gestion-libros.html** - Formulario CRUD de Libros
-- Formulario completo para agregar/editar libros
-- Secciones organizadas (información básica, ubicación, portada, ACTRA, digital)
-- Área de carga de imágenes con drag & drop visual
-- Campo de texto editable para ACTRA (copiar/pegar desde Word/PDF)
-- Validación de ISBN
-- Soporte para materiales digitales (URL)
-
-### 6. **06-gestion-prestamos.html** - Gestión de Préstamos
-- Políticas de préstamo visibles
-- Formulario de registro de préstamos
-- Autocompletado de datos del usuario por cédula
-- Lista de préstamos activos con estados
-- Acciones de devolución y renovación
-- Diferenciación estudiantes/profesores
-
-### 7. **07-informes.html** - Informes e Inventario
-- Reportes predefinidos (libros nuevos, estadísticas, retrasos, más solicitados)
-- Tabla de inventario anual por categoría
-- Sección de backup del sistema
-- Generador de reportes personalizado
-- Múltiples formatos de exportación (PDF, Excel, impresión)
-
-## Características del Diseño
-
-### Paleta de Colores
-- **Primary**: #2c5f4f (Verde bosque profesional)
-- **Secondary**: #8b7355 (Marrón cálido)
-- **Accent**: #d4a574 (Dorado suave)
-- **Background**: #f8f6f3 (Crema muy claro)
-- **Text**: #2d2d2d (Gris oscuro legible)
-
-### Tipografía
-- **Títulos**: Libre Baskerville (serif elegante)
-- **Cuerpo**: Source Sans 3 (sans-serif legible)
-- **Tamaño base**: 14pt para facilitar lectura
-
-### Principios de Diseño
-1. **Sobriedad**: Colores no brillantes, apropiados para uso prolongado
-2. **Legibilidad**: Tamaño de letra 14pt, contraste adecuado
-3. **Profesionalismo**: Diseño limpio y organizado
-4. **Usabilidad**: Iconografía clara, navegación intuitiva
-5. **Funcionalidad**: Cada elemento cumple una función específica
-
-## Navegación entre Pantallas
-
-```
-01-login.html
-    ├── → 02-consulta-publica.html (usuarios públicos)
-    └── → 04-dashboard-admin.html (administradores)
-
-02-consulta-publica.html
-    └── → 03-ficha-libro.html (al hacer clic en un libro)
-
-04-dashboard-admin.html (Hub central)
-    ├── → 05-gestion-libros.html (agregar/editar libros)
-    ├── → 06-gestion-prestamos.html (gestión de préstamos)
-    └── → 07-informes.html (reportes e inventario)
+# Iniciar el servidor
+npm start
 ```
 
-## Requerimientos Técnicos Cubiertos
+El servidor estará disponible en `http://localhost:3000` (o el puerto configurado en .env).
 
-- ✅ Información básica del libro (título, autor, ISBN, ACTRA)
-- ✅ Código ISBN con validación de formato
-- ✅ Imagen de portada (JPG/PNG, máx 200KB, 300x400px)
-- ✅ Categorías predefinidas y gestionables
-- ✅ Ubicación física (estante, biblioteca, código)
-- ✅ Control de existencias
-- ✅ Enlaces a material digital
-- ✅ Búsquedas flexibles (general y específicas)
-- ✅ Módulo administrativo seguro
-- ✅ Gestión de préstamos con políticas
-- ✅ Diferenciación estudiantes/profesores
-- ✅ Sistema "inteligente" de autocompletado
-- ✅ Generación de informes e inventario
-- ✅ Sistema de backup
+## Estructura del Proyecto
 
-## Tecnologías Utilizadas
+```
+├── app.js                  # Punto de entrada de la aplicación
+├── config/                 # Configuración de base de datos
+├── models/                 # Modelos Sequelize (Usuario, Material, Prestamo, etc.)
+├── controllers/            # Controladores de la aplicación
+├── services/               # Servicios (búsqueda, préstamos, imágenes, reportes, backup)
+├── routes/                 # Rutas públicas y de administración
+│   ├── public.js           # Rutas sin autenticación
+│   └── admin.js            # Rutas con autenticación
+├── middleware/             # Middleware (autenticación)
+├── views/                  # Plantillas EJS
+│   ├── public/             # Vistas públicas (buscador, resultados, ficha)
+│   └── admin/              # Vistas del panel de administración
+├── public/                 # Archivos estáticos (CSS, JS, imágenes)
+├── backup/                 # Backups automáticos generados
+└── documentos/             # Documentación del proyecto
+```
 
-- **HTML5**: Estructura semántica
-- **CSS3**: Estilos personalizados con variables CSS
-- **Bootstrap 5.3.2**: Framework responsive
-- **Bootstrap Icons 1.11.1**: Iconografía
-- **Google Fonts**: Tipografía (Libre Baskerville & Source Sans 3)
-- **JavaScript vanilla**: Interactividad básica (preview de imágenes)
+## Características
 
-## Cómo Usar
+- **Gestión de materiales**: Libros, revistas, tesis, anuarios, artículos
+- **Catálogo público**: Búsqueda y consulta de materiales
+- **Préstamos**: Registro, renovación y devolución
+- **Usuarios**: Gestión de usuarios y administradores
+- **Reportes**: Generación de informes en PDF y Excel
+- **Backup**: Creación de backups automáticos de la base de datos
+- **Imágenes**: Procesamiento de portadas de libros
 
-1. Descarga todos los archivos HTML
-2. Abre cualquier archivo en tu navegador web
-3. Navega entre las pantallas usando los enlaces
-4. Comienza por **01-login.html** para ver el flujo completo
+## Crear Primer Administrador
 
-## Presentación para el Jueves
+Desde la base de datos (usando un hash de bcrypt):
 
-Estas pantallas están listas para presentar. Recomendaciones:
+```sql
+INSERT INTO usuarios (cedula, nombre, tipo, password)
+VALUES ('12345678', 'Administrador', 'admin', '$2b$10$...hash_bcrypt...');
+```
 
-1. **Orden de presentación sugerido**:
-   - Login (01)
-   - Consulta Pública (02) → Ficha de Libro (03)
-   - Dashboard Admin (04)
-   - Gestión de Libros (05)
-   - Gestión de Préstamos (06)
-   - Informes e Inventario (07)
+O ejecutar el script:
 
-2. **Puntos clave a destacar**:
-   - Diseño profesional y sobrio
-   - Cumplimiento de todos los requerimientos
-   - Interfaz intuitiva y fácil de usar
-   - Responsive design
-   - Funcionalidades completas
+```bash
+node scripts/crear_admin.js
+```
 
----
+## Reglas de Préstamo
 
-**Desarrollado con Bootstrap 5 | Listo para implementación**
+- **Plazo estándar**: 14 días
+- **Renovación**: 1 vez, +7 días adicionales
+- **Sanción por retraso**: Suspensión por (días de retraso × 2) días
+
+## Variables de Entorno (.env)
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| PORT | Puerto del servidor | 3000 |
+| DB_HOST | Host de la base de datos | localhost |
+| DB_PORT | Puerto de MySQL/MariaDB | 3306 |
+| DB_NAME | Nombre de la base de datos | biblioteca |
+| DB_USER | Usuario de la base de datos | root |
+| DB_PASS | Contraseña de la base de datos | — |
+| SESSION_SECRET | Clave para sesiones | cadena_secreta |
+
+## Licencia
+
+MIT

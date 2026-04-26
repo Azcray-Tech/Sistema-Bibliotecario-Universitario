@@ -1,0 +1,54 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h4><i class="bi bi-book-half me-2"></i>Sistema Bibliográfico</h4>
+        <div class="user-info">
+            <i class="bi bi-person-circle me-1"></i><%= admin.nombre %>
+        </div>
+    </div>
+    <div class="sidebar-menu">
+        <div class="menu-section">Panel Principal</div>
+        <a href="/admin/dashboard" class="menu-item <%= page==='dashboard' ? 'active' : '' %>">
+            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+        </a>
+        <div class="menu-section">Gestión de Contenido</div>
+        <a href="/admin/catalogo" class="menu-item <%= page==='catalogo' ? 'active' : '' %>">
+            <i class="bi bi-book"></i><span>Biblioteca</span>
+        </a>
+        <a href="/admin/catalogo/nuevo" class="menu-item <%= page==='catalogo-nuevo' ? 'active' : '' %>">
+            <i class="bi bi-plus-circle"></i><span>Agregar Material</span>
+        </a>
+        <a href="/admin/categorias" class="menu-item <%= page==='categorias' ? 'active' : '' %>">
+            <i class="bi bi-tags"></i><span>Categorías</span>
+        </a>
+        <div class="menu-section">Préstamos</div>
+        <a href="/admin/prestamos" class="menu-item <%= page==='prestamos' ? 'active' : '' %>">
+            <i class="bi bi-arrow-left-right"></i><span>Gestión de Préstamos</span>
+        </a>
+        <a href="/admin/prestamos/historial" class="menu-item <%= page==='historial' ? 'active' : '' %>">
+            <i class="bi bi-clock-history"></i><span>Historial</span>
+        </a>
+        <a href="/admin/prestamos/sanciones" class="menu-item <%= page==='sanciones' ? 'active' : '' %>">
+            <i class="bi bi-exclamation-triangle"></i><span>Retrasos y Sanciones</span>
+        </a>
+        <div class="menu-section">Reportes</div>
+        <a href="/admin/informes" class="menu-item <%= page==='informes' ? 'active' : '' %>">
+            <i class="bi bi-file-earmark-bar-graph"></i><span>Generar Informes</span>
+        </a>
+        <a href="/admin/inventario" class="menu-item <%= page==='inventario' ? 'active' : '' %>">
+            <i class="bi bi-box-seam"></i><span>Inventario</span>
+        </a>
+        <div class="menu-section">Sistema</div>
+        <a href="/admin/usuarios" class="menu-item <%= page==='usuarios' ? 'active' : '' %>">
+            <i class="bi bi-people"></i><span>Usuarios</span>
+        </a>
+        <a href="/admin/backup" class="menu-item <%= page==='backup' ? 'active' : '' %>">
+            <i class="bi bi-database"></i><span>Backup</span>
+        </a>
+        <a href="/admin/configuracion" class="menu-item <%= page==='configuracion' ? 'active' : '' %>">
+            <i class="bi bi-gear"></i><span>Configuración</span>
+        </a>
+    </div>
+    <a href="/admin/logout" class="logout-btn">
+        <i class="bi bi-box-arrow-left"></i><span>Cerrar Sesión</span>
+    </a>
+</div>

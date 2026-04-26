@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Informes - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'informes'}) %>
+    <div class="main-content">
+        <div class="top-bar">
+            <h2><i class="bi bi-file-earmark-bar-graph me-2"></i>Informes y Reportes</h2>
+            <small class="text-muted">Genere reportes en PDF o Excel</small>
+        </div>
+
+        <!-- 1. Inventario completo -->
+        <div class="content-card mb-4">
+            <h5><i class="bi bi-box-seam me-2"></i>Inventario Completo</h5>
+            <p class="text-muted">Todos los materiales del catálogo con sus ejemplares, disponibilidad y ubicación.</p>
+            <div class="d-flex gap-2">
+                <a href="/admin/reportes/inventario/completo/pdf" class="btn btn-danger btn-sm" target="_blank">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                </a>
+                <a href="/admin/reportes/inventario/completo/excel" class="btn btn-success btn-sm" target="_blank">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                </a>
+            </div>
+        </div>
+
+        <!-- 2. Inventario por categoría -->
+        <div class="content-card mb-4">
+            <h5><i class="bi bi-tags me-2"></i>Inventario por Categoría</h5>
+            <p class="text-muted">Materiales filtrados por una categoría específica.</p>
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <select id="selectCategoria" class="form-select">
+                        <option value="">Seleccione una categoría...</option>
+                        <% ['Filosofia','Historia','Economia','Ciencias','Literatura','Tecnologia',
+                            'Arte','Derecho','Medicina','Sociologia','Integracion Latinoamericana',
+                            'Tesis','Revistas','Anuarios','Otro'].forEach(c => { %>
+                            <option value="<%= c %>"><%= c %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-danger btn-sm" onclick="descargar('categoria','pdf')">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                    </button>
+                    <button class="btn btn-success btn-sm ms-1" onclick="descargar('categoria','excel')">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Inventario por tipo -->
+        <div class="content-card mb-4">
+            <h5><i class="bi bi-collection me-2"></i>Inventario por Tipo de Material</h5>
+            <p class="text-muted">Solo libros, solo revistas, solo tesis o solo anuarios.</p>
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <select id="selectTipo" class="form-select">
+                        <option value="">Seleccione un tipo...</option>
+                        <% ['libro','revista','tesis','anuario'].forEach(t => { %>
+                            <option value="<%= t %>"><%= t.charAt(0).toUpperCase()+t.slice(1) %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-danger btn-sm" onclick="descargar('tipo','pdf')">
+                        <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                    </button>
+                    <button class="btn btn-success btn-sm ms-1" onclick="descargar('tipo','excel')">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Préstamos activos -->
+        <div class="content-card mb-4">
+            <h5><i class="bi bi-arrow-left-right me-2"></i>Préstamos Activos</h5>
+            <p class="text-muted">Todos los préstamos en curso, ordenados por fecha de devolución. Los vencidos aparecen resaltados.</p>
+            <div class="d-flex gap-2">
+                <a href="/admin/reportes/prestamos/activos/pdf" class="btn btn-danger btn-sm" target="_blank">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                </a>
+                <a href="/admin/reportes/prestamos/activos/excel" class="btn btn-success btn-sm" target="_blank">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                </a>
+            </div>
+        </div>
+
+        <!-- 5. Más solicitados -->
+        <div class="content-card mb-4">
+            <h5><i class="bi bi-graph-up me-2"></i>Materiales Más Solicitados</h5>
+            <p class="text-muted">Top 50 de materiales con mayor número de préstamos históricos.</p>
+            <div class="d-flex gap-2">
+                <a href="/admin/reportes/mas-solicitados/pdf" class="btn btn-danger btn-sm" target="_blank">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                </a>
+                <a href="/admin/reportes/mas-solicitados/excel" class="btn btn-success btn-sm" target="_blank">
+                    <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                </a>
+            </div>
+        </div>
+
+        <!-- Backup -->
+        <div class="backup-section">
+            <h5><i class="bi bi-database me-2"></i>Respaldo del Sistema (Backup)</h5>
+            <div class="backup-info">
+                <i class="bi bi-info-circle-fill"></i>
+                <div>
+                    <p class="mb-0">Genera un archivo .zip con la base de datos completa y todas las portadas.</p>
+                </div>
+            </div>
+            <form method="POST" action="/admin/backup" class="mt-3">
+                <button type="submit" class="btn btn-warning btn-lg">
+                    <i class="bi bi-cloud-download me-2"></i>Generar Backup Ahora
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+function descargar(filtro, formato) {
+    const val = document.getElementById('select' + filtro.charAt(0).toUpperCase() + filtro.slice(1)).value;
+    if (!val) { alert('Seleccione una opción primero'); return; }
+    window.open(`/admin/reportes/inventario/${filtro}/${val}/${formato}`, '_blank');
+}
+</script>
+</body>
+</html>

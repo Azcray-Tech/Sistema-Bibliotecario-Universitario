@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Catálogo Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<%- include('../partials/navbar_public') %>
+<div class="hero-search">
+    <div class="container text-center">
+        <h1>Catálogo Bibliográfico</h1>
+        <p>Biblioteca Especializada en Integración Latinoamericana</p>
+    </div>
+</div>
+<div class="container">
+    <div class="search-container">
+        <ul class="nav nav-tabs search-tabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#general">
+                    <i class="bi bi-search me-2"></i>Búsqueda General
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#advanced">
+                    <i class="bi bi-funnel me-2"></i>Búsqueda Avanzada
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="general">
+                <form action="/buscar" method="GET">
+                    <div class="row g-3">
+                        <div class="col-md-10">
+                            <input type="text" name="q" class="form-control" placeholder="Buscar por título, autor, ISBN o palabra clave..." value="<%= query.q || '' %>">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-search w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="quick-categories mt-3">
+                    <span style="font-weight:600;margin-right:0.5rem;">Categorías rápidas:</span>
+                    <% ['Filosofía','Historia','Economía','Sociología','Integración Latinoamericana','Tesis','Revistas'].forEach(cat => { %>
+                        <a href="/buscar?categoria=<%= encodeURIComponent(cat) %>" class="category-chip"><%= cat %></a>
+                    <% }) %>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="advanced">
+                <form action="/buscar" method="GET">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6"><label class="form-label">Título</label><input type="text" name="titulo" class="form-control" value="<%= query.titulo || '' %>"></div>
+                        <div class="col-md-6"><label class="form-label">Autor</label><input type="text" name="autor" class="form-control" value="<%= query.autor || '' %>"></div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6"><label class="form-label">ISBN</label><input type="text" name="isbn" class="form-control" value="<%= query.isbn || '' %>"></div>
+                        <div class="col-md-6">
+                            <label class="form-label">Categoría</label>
+                            <select name="categoria" class="form-select">
+                                <option value="">Todas</option>
+                                <% ['Filosofía','Historia','Economía','Sociología','Integración Latinoamericana','Tesis','Revistas','Anuarios'].forEach(c => { %>
+                                    <option value="<%= c %>" <%= query.categoria===c?'selected':'' %>><%= c %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tipo de Material</label>
+                            <select name="tipo" class="form-select">
+                                <option value="">Todos</option>
+                                <% ['libro','revista','tesis','anuario'].forEach(t => { %>
+                                    <option value="<%= t %>" <%= query.tipo===t?'selected':'' %>><%= t.charAt(0).toUpperCase()+t.slice(1) %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="submit" class="btn btn-search w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incorporaciones recientes -->
+    <% if (recientes && recientes.length > 0) { %>
+    <div class="mt-5 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0"><i class="bi bi-stars me-2"></i>Incorporaciones Recientes</h4>
+            <a href="/buscar" class="btn btn-sm btn-outline-secondary">Ver todos</a>
+        </div>
+        <div class="row g-3">
+            <% recientes.forEach(m => { %>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <div class="portada-card" onclick="window.location.href='/material/<%= m.id %>'">
+                    <% if (m.portada) { %>
+                        <img src="<%= m.portada %>" alt="<%= m.titulo %>" class="portada-img">
+                    <% } else { %>
+                        <div class="portada-placeholder">
+                            <i class="bi bi-book"></i>
+                            <span><%= m.titulo.substring(0,40) %></span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
+    <% } %>
+
+</div>
+<div style="height:4rem;"></div>
+</body>
+</html>

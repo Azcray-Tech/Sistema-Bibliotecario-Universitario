@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Historial - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'historial'}) %>
+    <div class="main-content">
+        <div class="top-bar"><h2><i class="bi bi-clock-history me-2"></i>Historial de Préstamos</h2></div>
+        <div class="content-card">
+            <div class="mb-3 row g-2">
+                <div class="col-md-4">
+                    <input type="text" id="filtro" class="form-control" placeholder="Filtrar por usuario o material...">
+                </div>
+                <div class="col-md-3">
+                    <select id="filtroEstado" class="form-select">
+                        <option value="">Todos los estados</option>
+                        <option value="activo">Activo</option>
+                        <option value="devuelto">Devuelto</option>
+                        <option value="vencido">Vencido</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom" id="tablaHistorial">
+                    <thead>
+                        <tr><th>Usuario</th><th>Cédula</th><th>Material</th><th>Préstamo</th><th>Devolución esperada</th><th>Devolución real</th><th>Estado</th><th>Retraso</th></tr>
+                    </thead>
+                    <tbody>
+                        <% prestamos.forEach(p => { %>
+                        <tr data-estado="<%= p.estado %>">
+                            <td><%= p.Usuario ? p.Usuario.nombre : '-' %></td>
+                            <td><small><%= p.Usuario ? p.Usuario.cedula : '-' %></small></td>
+                            <td><%= p.Material ? p.Material.titulo.substring(0,40) : '-' %></td>
+                            <td><small><%= new Date(p.fecha_prestamo).toLocaleDateString('es-VE') %></small></td>
+                            <td><small><%= new Date(p.fecha_devolucion_esperada).toLocaleDateString('es-VE') %></small></td>
+                            <td><small><%= p.fecha_devolucion_real ? new Date(p.fecha_devolucion_real).toLocaleDateString('es-VE') : '-' %></small></td>
+                            <td>
+                                <% if (p.estado==='activo') { %><span class="badge bg-success">Activo</span>
+                                <% } else if (p.estado==='devuelto') { %><span class="badge bg-primary">Devuelto</span>
+                                <% } else { %><span class="badge bg-danger">Vencido</span><% } %>
+                            </td>
+                            <td><%= p.dias_retraso > 0 ? p.dias_retraso+' días' : '-' %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('filtro').addEventListener('input', filtrar);
+document.getElementById('filtroEstado').addEventListener('change', filtrar);
+function filtrar() {
+    const txt = document.getElementById('filtro').value.toLowerCase();
+    const est = document.getElementById('filtroEstado').value;
+    document.querySelectorAll('#tablaHistorial tbody tr').forEach(row => {
+        const matchTxt = row.textContent.toLowerCase().includes(txt);
+        const matchEst = !est || row.dataset.estado === est;
+        row.style.display = matchTxt && matchEst ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>

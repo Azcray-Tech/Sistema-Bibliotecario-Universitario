@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Usuarios - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'usuarios'}) %>
+    <div class="main-content">
+        <div class="top-bar">
+            <h2><i class="bi bi-people me-2"></i>Usuarios del Sistema</h2>
+        </div>
+        <div class="content-card">
+            <div class="mb-3">
+                <input type="text" id="filtro" class="form-control" placeholder="Buscar por nombre o cédula...">
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom" id="tablaUsuarios">
+                    <thead>
+                        <tr><th>Nombre</th><th>Cédula</th><th>Tipo</th><th>Estado</th><th>Suspendido hasta</th></tr>
+                    </thead>
+                    <tbody>
+                        <% usuarios.forEach(u => { %>
+                        <tr>
+                            <td><strong><%= u.nombre %></strong></td>
+                            <td><%= u.cedula %></td>
+                            <td><span class="badge <%= u.tipo==='admin'?'bg-primary':'bg-secondary' %>"><%= u.tipo %></span></td>
+                            <td>
+                                <% if (u.suspendido && u.suspendido_hasta && new Date(u.suspendido_hasta) > new Date()) { %>
+                                    <span class="badge bg-danger">Suspendido</span>
+                                <% } else { %>
+                                    <span class="badge bg-success">Activo</span>
+                                <% } %>
+                            </td>
+                            <td><small><%= u.suspendido_hasta ? new Date(u.suspendido_hasta).toLocaleDateString('es-VE') : '-' %></small></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('filtro').addEventListener('input', function() {
+    const val = this.value.toLowerCase();
+    document.querySelectorAll('#tablaUsuarios tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(val) ? '' : 'none';
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Gestión de Préstamos - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'prestamos'}) %>
+    <div class="main-content">
+
+        <div class="top-bar">
+            <h2><i class="bi bi-arrow-left-right me-2"></i>Gestión de Préstamos</h2>
+        </div>
+
+        <div class="policy-card">
+            <h5><i class="bi bi-info-circle me-2"></i>Políticas de Préstamo</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="policy-item"><i class="bi bi-check-circle-fill"></i><div><strong>Plazo estándar:</strong> 14 días</div></div>
+                    <div class="policy-item"><i class="bi bi-arrow-repeat"></i><div><strong>Renovaciones:</strong> 1 permitida (+7 días)</div></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="policy-item"><i class="bi bi-exclamation-triangle-fill"></i><div><strong>Sanciones:</strong> 2 días de suspensión por cada día de retraso</div></div>
+                </div>
+            </div>
+        </div>
+
+        <% if (error) { %>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
+        <% } %>
+
+        <!-- PASO 1 y 2: Formulario de nuevo préstamo -->
+        <div class="form-container">
+            <h4 class="mb-4"><i class="bi bi-plus-circle me-2"></i>Registrar Nuevo Préstamo</h4>
+
+            <!-- PASO 1: Buscar usuario -->
+            <div class="section-header">
+                <h5><i class="bi bi-person-fill me-2"></i>Paso 1 — Identificar Usuario</h5>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-5">
+                    <label class="form-label">Cédula del usuario</label>
+                    <div class="input-group">
+                        <input type="text" id="inputCedula" class="form-control"
+                               placeholder="ej: V-12345678">
+                        <button class="btn btn-primary-custom" type="button" onclick="buscarUsuario()">
+                            <i class="bi bi-search me-1"></i>Buscar
+                        </button>
+                    </div>
+                    <div class="form-text">Si el usuario no existe, podrá registrarlo a continuación.</div>
+                </div>
+            </div>
+
+            <!-- Resultado búsqueda usuario -->
+            <div id="resultadoUsuario" style="display:none;" class="mb-4">
+                <!-- Se llena con JS -->
+            </div>
+
+            <!-- Formulario registro usuario nuevo (oculto por defecto) -->
+            <div id="formNuevoUsuario" style="display:none;" class="mb-4 p-3 rounded"
+                 style="background:var(--color-bg-light);border:1px solid var(--color-border-tertiary);">
+                <h6 class="mb-3"><i class="bi bi-person-plus me-2"></i>Registrar Nuevo Usuario</h6>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" id="nuevoNombre" class="form-control" placeholder="Nombre">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Apellido <span class="text-danger">*</span></label>
+                        <input type="text" id="nuevoApellido" class="form-control" placeholder="Apellido">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Tipo <span class="text-danger">*</span></label>
+                        <select id="nuevoTipo" class="form-select">
+                            <option value="estudiante">Estudiante</option>
+                            <option value="profesor">Profesor</option>
+                            <option value="publico">Público general</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" id="nuevoTelefono" class="form-control" placeholder="+58 424-...">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Correo</label>
+                        <input type="email" id="nuevoCorreo" class="form-control" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="button" class="btn btn-primary-custom w-100" onclick="registrarUsuario()">
+                            <i class="bi bi-save me-1"></i>Guardar y Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PASO 2: Buscar ejemplar (oculto hasta tener usuario) -->
+            <div id="paso2" style="display:none;">
+                <div class="section-header">
+                    <h5><i class="bi bi-book-fill me-2"></i>Paso 2 — Seleccionar Material</h5>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-7">
+                        <label class="form-label">Buscar por título del libro</label>
+                        <div class="input-group">
+                            <input type="text" id="inputTitulo" class="form-control"
+                                   placeholder="Escriba el título del material...">
+                            <button class="btn btn-primary-custom" type="button" onclick="buscarEjemplares()">
+                                <i class="bi bi-search me-1"></i>Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de ejemplares disponibles -->
+                <div id="resultadoEjemplares" class="mb-4"></div>
+
+                <!-- PASO 3: Confirmar préstamo (oculto hasta seleccionar ejemplar) -->
+                <div id="paso3" style="display:none;">
+                    <div class="section-header">
+                        <h5><i class="bi bi-check-circle me-2"></i>Paso 3 — Confirmar Préstamo</h5>
+                    </div>
+                    <div id="resumenPrestamo" class="p-3 rounded mb-3"
+                         style="background:#f0f9f4;border:2px solid #28a745;border-radius:8px;"></div>
+                    <form method="POST" action="/admin/prestamos" id="formPrestamo">
+                        <input type="hidden" name="usuario_id" id="hiddenUsuarioId">
+                        <input type="hidden" name="ejemplar_id" id="hiddenEjemplarId">
+                        <div class="d-flex gap-3">
+                            <button type="button" class="btn btn-secondary-custom" onclick="reiniciar()">
+                                <i class="bi bi-x-lg me-1"></i>Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="bi bi-check-lg me-2"></i>Confirmar Préstamo
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Préstamos activos -->
+        <div class="form-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0"><i class="bi bi-list-ul me-2"></i>Préstamos Activos</h4>
+                <input type="text" id="filtroPrestamos" class="form-control form-control-sm"
+                       placeholder="Filtrar..." style="max-width:220px;"
+                       oninput="filtrarPrestamos(this.value)">
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom" id="tablaPrestamos">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Cédula</th>
+                            <th>Material</th>
+                            <th>Ejemplar</th>
+                            <th>F. Préstamo</th>
+                            <th>F. Devolución</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% prestamos.forEach(p => {
+                            const hoy  = new Date();
+                            const dev  = new Date(p.fecha_devolucion);
+                            const diff = Math.floor((hoy - dev) / 86400000);
+                        %>
+                        <tr>
+                            <td><%= p.Usuario ? p.Usuario.nombre + ' ' + p.Usuario.apellido : '-' %></td>
+                            <td><small class="text-muted"><%= p.Usuario ? p.Usuario.cedula : '-' %></small></td>
+                            <td>
+                                <% if (p.Ejemplar?.Material) { %>
+                                    <span title="<%= p.Ejemplar.Material.titulo %>">
+                                        <%= p.Ejemplar.Material.titulo.substring(0,35) %><%= p.Ejemplar.Material.titulo.length>35?'...':'' %>
+                                    </span>
+                                <% } else { %>-<% } %>
+                            </td>
+                            <td><code><small><%= p.Ejemplar ? p.Ejemplar.codigo_inventario : '-' %></small></code></td>
+                            <td><small><%= new Date(p.fecha_salida).toLocaleDateString('es-VE') %></small></td>
+                            <td><small><%= dev.toLocaleDateString('es-VE') %></small></td>
+                            <td>
+                                <% if (diff > 0) { %>
+                                    <span class="badge bg-danger">Vencido <%= diff %>d</span>
+                                <% } else if (diff >= -2) { %>
+                                    <span class="badge bg-warning text-dark">Por vencer</span>
+                                <% } else { %>
+                                    <span class="badge bg-success">Activo</span>
+                                <% } %>
+                                <% if (p.renovado) { %><small class="text-muted ms-1">(ren.)</small><% } %>
+                            </td>
+                            <td>
+                                <form method="POST" action="/admin/prestamos/<%= p.id %>/devolver"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('¿Confirmar devolución?')">
+                                    <button type="submit" class="action-btn action-btn-return">
+                                        <i class="bi bi-check-lg"></i> Devolver
+                                    </button>
+                                </form>
+                                <% if (!p.renovado && diff <= 0) { %>
+                                <form method="POST" action="/admin/prestamos/<%= p.id %>/renovar"
+                                      style="display:inline;">
+                                    <button type="submit" class="action-btn action-btn-renew">
+                                        <i class="bi bi-arrow-repeat"></i> Renovar
+                                    </button>
+                                </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                        <% if (prestamos.length === 0) { %>
+                            <tr><td colspan="8" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox me-2"></i>No hay préstamos activos
+                            </td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let usuarioSeleccionado = null;
+let ejemplarSeleccionado = null;
+
+// ── PASO 1: Buscar usuario por cédula ────────────────────────
+async function buscarUsuario() {
+    const cedula = document.getElementById('inputCedula').value.trim();
+    if (!cedula) return;
+
+    const res  = await fetch(`/admin/api/usuario?cedula=${encodeURIComponent(cedula)}`);
+    const data = await res.json();
+
+    const div = document.getElementById('resultadoUsuario');
+    div.style.display = 'block';
+    document.getElementById('formNuevoUsuario').style.display = 'none';
+
+    if (data.encontrado) {
+        const u = data.usuario;
+        const suspendido = u.suspendido && u.suspendido_hasta && new Date(u.suspendido_hasta) > new Date();
+        const colorCard  = suspendido ? '#fff3cd;border-color:#ffc107' : '#f0f9f4;border-color:#28a745';
+        const iconEstado = suspendido
+            ? `<span class="badge bg-danger">Suspendido hasta ${new Date(u.suspendido_hasta).toLocaleDateString('es-VE')}</span>`
+            : `<span class="badge bg-success">Activo</span>`;
+
+        div.innerHTML = `
+            <div class="p-3 rounded mb-2" style="background:${colorCard};border:2px solid;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>${u.nombre} ${u.apellido}</strong>
+                        <span class="text-muted ms-2">${u.cedula}</span>
+                        <span class="badge bg-secondary ms-2">${u.tipo}</span>
+                        <span class="ms-2">${iconEstado}</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="reiniciarUsuario()">
+                        <i class="bi bi-x"></i> Cambiar
+                    </button>
+                </div>
+                <div class="mt-2 d-flex gap-4">
+                    <small><i class="bi bi-arrow-left-right me-1"></i>Préstamos activos: <strong>${u.prestamos_activos}</strong></small>
+                    ${u.telefono ? `<small><i class="bi bi-telephone me-1"></i>${u.telefono}</small>` : ''}
+                    ${u.correo   ? `<small><i class="bi bi-envelope me-1"></i>${u.correo}</small>`   : ''}
+                </div>
+                ${u.prestamos_activos > 0 ? `
+                <div class="mt-2">
+                    <small class="text-muted">Préstamos actuales:</small>
+                    <ul class="mb-0 mt-1">
+                        ${(u.prestamos||[]).map(p => `
+                            <li><small>${p.material} <code>${p.ejemplar}</code> — vence ${p.devolucion}</small></li>
+                        `).join('')}
+                    </ul>
+                </div>` : ''}
+            </div>`;
+
+        if (suspendido) {
+            div.innerHTML += `<div class="alert alert-warning py-2">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Este usuario está suspendido y no puede recibir préstamos.
+            </div>`;
+        } else {
+            usuarioSeleccionado = u;
+            document.getElementById('hiddenUsuarioId').value = u.id;
+            document.getElementById('paso2').style.display = 'block';
+        }
+    } else {
+        div.innerHTML = `
+            <div class="alert alert-warning py-2">
+                <i class="bi bi-person-x me-2"></i>
+                Usuario con cédula <strong>${cedula}</strong> no encontrado.
+                ¿Desea registrarlo ahora?
+                <button class="btn btn-sm btn-primary-custom ms-3"
+                        onclick="mostrarFormNuevoUsuario('${cedula}')">
+                    <i class="bi bi-person-plus me-1"></i>Registrar
+                </button>
+            </div>`;
+    }
+}
+
+function mostrarFormNuevoUsuario(cedula) {
+    document.getElementById('formNuevoUsuario').style.display = 'block';
+}
+
+function reiniciarUsuario() {
+    usuarioSeleccionado = null;
+    document.getElementById('resultadoUsuario').style.display = 'none';
+    document.getElementById('formNuevoUsuario').style.display = 'none';
+    document.getElementById('paso2').style.display = 'none';
+    document.getElementById('paso3').style.display = 'none';
+    document.getElementById('resultadoEjemplares').innerHTML = '';
+    document.getElementById('inputCedula').value = '';
+    document.getElementById('inputCedula').focus();
+}
+
+async function registrarUsuario() {
+    const cedula   = document.getElementById('inputCedula').value.trim();
+    const nombre   = document.getElementById('nuevoNombre').value.trim();
+    const apellido = document.getElementById('nuevoApellido').value.trim();
+    const tipo     = document.getElementById('nuevoTipo').value;
+    const telefono = document.getElementById('nuevoTelefono').value.trim();
+    const correo   = document.getElementById('nuevoCorreo').value.trim();
+
+    if (!nombre || !apellido) {
+        alert('El nombre y apellido son obligatorios.');
+        return;
+    }
+
+    const res  = await fetch('/admin/api/usuario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cedula, nombre, apellido, tipo, telefono, correo })
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+        document.getElementById('formNuevoUsuario').style.display = 'none';
+        usuarioSeleccionado = data.usuario;
+        document.getElementById('hiddenUsuarioId').value = data.usuario.id;
+        document.getElementById('resultadoUsuario').innerHTML = `
+            <div class="alert alert-success py-2">
+                <i class="bi bi-check-circle me-2"></i>
+                Usuario <strong>${nombre} ${apellido}</strong> registrado correctamente.
+            </div>`;
+        document.getElementById('paso2').style.display = 'block';
+    } else {
+        alert('Error al registrar: ' + (data.error || 'Error desconocido'));
+    }
+}
+
+// ── PASO 2: Buscar ejemplares por título ─────────────────────
+async function buscarEjemplares() {
+    const titulo = document.getElementById('inputTitulo').value.trim();
+    if (!titulo) return;
+
+    const res  = await fetch(`/admin/api/ejemplares?titulo=${encodeURIComponent(titulo)}`);
+    const data = await res.json();
+    const div  = document.getElementById('resultadoEjemplares');
+
+    if (!data.length) {
+        div.innerHTML = `<div class="alert alert-warning py-2">
+            <i class="bi bi-search me-2"></i>No se encontraron ejemplares disponibles para "<strong>${titulo}</strong>".
+        </div>`;
+        return;
+    }
+
+    div.innerHTML = `
+        <p class="text-muted mb-2"><small>Seleccione el ejemplar a prestar:</small></p>
+        <div class="table-responsive">
+            <table class="table table-custom table-sm">
+                <thead><tr><th>Título</th><th>Autor(es)</th><th>Código ejemplar</th><th>Tipo</th><th></th></tr></thead>
+                <tbody>
+                    ${data.map(e => `
+                    <tr>
+                        <td>${e.titulo}</td>
+                        <td><small class="text-muted">${e.autores || '-'}</small></td>
+                        <td><code>${e.codigo_inventario}</code></td>
+                        <td><span class="badge bg-secondary">${e.tipo}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-primary-custom"
+                                    onclick="seleccionarEjemplar(${e.id}, '${e.titulo.replace(/'/g,"\\'")}', '${e.codigo_inventario}', '${(e.autores||'-').replace(/'/g,"\\'")}')">
+                                Seleccionar
+                            </button>
+                        </td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>`;
+}
+
+// Permitir buscar con Enter
+document.getElementById('inputTitulo')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); buscarEjemplares(); }
+});
+document.getElementById('inputCedula')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); buscarUsuario(); }
+});
+
+// ── PASO 3: Confirmar ────────────────────────────────────────
+function seleccionarEjemplar(id, titulo, codigo, autores) {
+    ejemplarSeleccionado = { id, titulo, codigo, autores };
+    document.getElementById('hiddenEjemplarId').value = id;
+
+    const u = usuarioSeleccionado;
+    document.getElementById('resumenPrestamo').innerHTML = `
+        <h6 class="mb-3"><i class="bi bi-receipt me-2"></i>Resumen del Préstamo</h6>
+        <div class="row g-2">
+            <div class="col-md-6">
+                <small class="text-muted d-block">Usuario</small>
+                <strong>${u.nombre} ${u.apellido}</strong>
+                <small class="text-muted ms-2">${u.cedula}</small>
+            </div>
+            <div class="col-md-6">
+                <small class="text-muted d-block">Material</small>
+                <strong>${titulo}</strong>
+                <small class="text-muted ms-2">${autores}</small>
+            </div>
+            <div class="col-md-6">
+                <small class="text-muted d-block">Código del ejemplar</small>
+                <code>${codigo}</code>
+            </div>
+            <div class="col-md-6">
+                <small class="text-muted d-block">Fecha de devolución estimada</small>
+                <strong>${(() => { const d = new Date(); d.setDate(d.getDate()+14); return d.toLocaleDateString('es-VE'); })()}</strong>
+                <small class="text-muted"> (14 días)</small>
+            </div>
+        </div>`;
+
+    document.getElementById('resultadoEjemplares').innerHTML = `
+        <div class="alert alert-success py-2 mb-2">
+            <i class="bi bi-check-circle me-2"></i>
+            Ejemplar seleccionado: <strong>${titulo}</strong> — <code>${codigo}</code>
+            <button class="btn btn-sm btn-outline-secondary ms-3" onclick="buscarEjemplares()">Cambiar</button>
+        </div>`;
+
+    document.getElementById('paso3').style.display = 'block';
+    document.getElementById('paso3').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function reiniciar() {
+    reiniciarUsuario();
+    document.getElementById('inputTitulo').value = '';
+    document.getElementById('resultadoEjemplares').innerHTML = '';
+    document.getElementById('resumenPrestamo').innerHTML = '';
+    ejemplarSeleccionado = null;
+}
+
+// ── Filtro tabla préstamos ───────────────────────────────────
+function filtrarPrestamos(val) {
+    val = val.toLowerCase();
+    document.querySelectorAll('#tablaPrestamos tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(val) ? '' : 'none';
+    });
+}
+</script>
+</body>
+</html>

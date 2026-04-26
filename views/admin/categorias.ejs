@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><title>Categorías - Sistema Bibliográfico</title><%- include('../partials/head') %></head>
+<body>
+<div class="admin-wrapper">
+    <%- include('../partials/sidebar', {page:'categorias'}) %>
+    <div class="main-content">
+        <div class="top-bar">
+            <h2><i class="bi bi-tags me-2"></i>Gestión de Categorías</h2>
+        </div>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i><%= error %></div>
+        <% } %>
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i><%= success %></div>
+        <% } %>
+
+        <div class="row g-4">
+            <!-- Formulario agregar -->
+            <div class="col-md-4">
+                <div class="content-card h-100">
+                    <h5 class="mb-3"><i class="bi bi-plus-circle me-2"></i>Nueva Categoría</h5>
+                    <form method="POST" action="/admin/categorias">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" name="nombre" class="form-control" required
+                                   placeholder="ej: Lingüística">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="descripcion" class="form-control" rows="3"
+                                      placeholder="Descripción breve de la categoría..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom w-100">
+                            <i class="bi bi-save me-2"></i>Guardar Categoría
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Listado -->
+            <div class="col-md-8">
+                <div class="content-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Categorías registradas (<%= categorias.length %>)</h5>
+                        <input type="text" id="filtro" class="form-control form-control-sm"
+                               placeholder="Buscar..." style="max-width:200px;">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom" id="tablaCategorias">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Materiales</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% categorias.forEach(c => { %>
+                                <tr>
+                                    <td><span class="badge-category"><%= c.nombre %></span></td>
+                                    <td><small class="text-muted"><%= c.descripcion || '-' %></small></td>
+                                    <td>
+                                        <span class="badge bg-secondary"><%= c.total_materiales || 0 %></span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary me-1"
+                                                onclick="abrirEditar(<%= c.id %>, '<%= c.nombre.replace(/'/g,"\\'") %>', '<%= (c.descripcion||'').replace(/'/g,"\\'") %>')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <% if (!c.total_materiales || c.total_materiales == 0) { %>
+                                        <form method="POST" action="/admin/categorias/<%= c.id %>/eliminar"
+                                              style="display:inline;"
+                                              onsubmit="return confirm('¿Eliminar la categoría «<%= c.nombre %>»?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        <% } else { %>
+                                        <button class="btn btn-sm btn-outline-danger" disabled
+                                                title="No se puede eliminar — tiene materiales asignados">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal editar -->
+<div class="modal fade" id="modalEditar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditar" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" id="editNombre" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea id="editDescripcion" name="descripcion" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-save me-2"></i>Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('filtro').addEventListener('input', function() {
+    const val = this.value.toLowerCase();
+    document.querySelectorAll('#tablaCategorias tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(val) ? '' : 'none';
+    });
+});
+
+function abrirEditar(id, nombre, descripcion) {
+    document.getElementById('editNombre').value      = nombre;
+    document.getElementById('editDescripcion').value = descripcion;
+    document.getElementById('formEditar').action     = '/admin/categorias/' + id;
+    new bootstrap.Modal(document.getElementById('modalEditar')).show();
+}
+</script>
+</body>
+</html>
