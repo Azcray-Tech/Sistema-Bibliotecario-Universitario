@@ -75,15 +75,17 @@
                             <td class="align-middle"><strong><%= m.titulo %></strong></td>
                             <td class="align-middle"><small><%= autoresStr %></small></td>
                             <td class="align-middle"><small><%= codigoStr %></small></td>
-                            <td class="align-middle"><span class="badge bg-secondary">
+                            <td class="align-middle text-center"><span class="badge bg-secondary">
                                         <% if (m.tipo === 'libro') { %><i class="bi bi-book"></i><% } %>
                                         <% if (m.tipo === 'tesis') { %><i class="bi bi-mortarboard"></i><% } %>
                                         <% if (m.tipo === 'revista') { %><i class="bi bi-journal-text"></i><% } %>
                                         <% if (m.tipo === 'anuario') { %><i class="bi bi-calendar3"></i><% } %>
                                         <%= m.tipo %>
                                     </span></td>
-                            <td class="align-middle"><span class="badge-category"><%= m.categoria %></span></td>
-                            <td class="align-middle">
+                            <td class="align-middle text-center"><span class="badge" style="background:var(--color-accent);color:white;">
+                                        <%= m.categoria %>
+                                    </span></td>
+                            <td class="align-middle text-center">
                                 <span class="badge <%= m.stock > 0 ? 'bg-success' : 'bg-danger' %>">
                                     <% if (m.stock > 0) { %><i class="bi bi-check-circle-fill"></i><% } else { %><i class="bi bi-x-circle-fill"></i><% } %>
                                     <%= m.stock %> / <%= m.total_ejemplares %>
