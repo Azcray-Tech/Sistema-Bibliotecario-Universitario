@@ -13,7 +13,7 @@ exports.postLogin = async (req, res) => {
     if (!usuario) return res.render('admin/login', { error: 'Credenciales inválidas' });
     const valid = await bcrypt.compare(password, usuario.admin.password);
     if (!valid)  return res.render('admin/login', { error: 'Credenciales inválidas' });
-    req.session.admin = { id: usuario.id, nombre: usuario.nombre + ' ' + usuario.apellido };
+    req.session.admin = { id: usuario.id, nombre: usuario.nombre + ' ' + usuario.apellido, rol: usuario.admin.rol };
     return res.redirect('/admin/dashboard');
   } catch(e) {
     console.error(e);

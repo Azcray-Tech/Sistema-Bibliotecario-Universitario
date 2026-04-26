@@ -4,7 +4,7 @@ const multer   = require('multer');
 const fs       = require('fs');
 const path     = require('path');
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
-const { requireAdmin } = require('../middleware/auth');
+const { requireAdmin, requireStaff } = require('../middleware/auth');
 const Auth     = require('../controllers/AuthController');
 const Catalogo = require('../controllers/CatalogoController');
 const { Prestamo, Ejemplar, Material, Usuario, Administrador, Categoria } = require('../models');
@@ -22,7 +22,7 @@ router.post('/login', Auth.postLogin);
 router.get('/logout', Auth.logout);
 
 // ── Dashboard ──
-router.get('/dashboard', requireAdmin, async (req, res) => {
+router.get('/dashboard', requireStaff, async (req, res) => {
   const { fn, col, literal } = require('sequelize');
 
   const totalMateriales  = await Material.count();
@@ -85,7 +85,7 @@ router.post('/ejemplar/:id/estado', requireAdmin, async (req, res) => {
 
 // ── Categorías (CRUD desde BD) ──
 
-router.get('/categorias', requireAdmin, async (req, res) => {
+router.get('/categorias', requireStaff, async (req, res) => {
   const categorias = await Categoria.findAll({ order: [['nombre','ASC']] });
   // Contar materiales por categoría
   const { Material } = require('../models');
@@ -128,7 +128,7 @@ router.post('/categorias/:id/eliminar', requireAdmin, async (req, res) => {
 });
 
 // ── Préstamos ──
-router.get('/prestamos', requireAdmin, async (req, res) => {
+router.get('/prestamos', requireStaff, async (req, res) => {
   const prestamos = await Prestamo.findAll({
     where: { estado: 'activo' },
     include: [
@@ -139,7 +139,7 @@ router.get('/prestamos', requireAdmin, async (req, res) => {
   });
   res.render('admin/prestamos', { admin: req.session.admin, prestamos, error: null });
 });
-router.post('/prestamos', requireAdmin, async (req, res) => {
+router.post('/prestamos', requireStaff, async (req, res) => {
   try {
     await prestamoSvc.registrar(req.body.usuario_id, req.body.ejemplar_id);
     res.redirect('/admin/prestamos');
@@ -152,11 +152,11 @@ router.post('/prestamos', requireAdmin, async (req, res) => {
     res.render('admin/prestamos', { admin: req.session.admin, prestamos, error: e.message });
   }
 });
-router.post('/prestamos/:id/renovar',  requireAdmin, async (req, res) => { await prestamoSvc.renovar(req.params.id);  res.redirect('/admin/prestamos'); });
-router.post('/prestamos/:id/devolver', requireAdmin, async (req, res) => { await prestamoSvc.devolver(req.params.id); res.redirect('/admin/prestamos'); });
+router.post('/prestamos/:id/renovar',  requireStaff, async (req, res) => { await prestamoSvc.renovar(req.params.id);  res.redirect('/admin/prestamos'); });
+router.post('/prestamos/:id/devolver', requireStaff, async (req, res) => { await prestamoSvc.devolver(req.params.id); res.redirect('/admin/prestamos'); });
 
 // ── Historial ──
-router.get('/prestamos/historial', requireAdmin, async (req, res) => {
+router.get('/prestamos/historial', requireStaff, async (req, res) => {
   const prestamos = await Prestamo.findAll({
     include: [{ model: Ejemplar, include: [Material] }, { model: Usuario }],
     order: [['createdAt','DESC']]
@@ -165,7 +165,7 @@ router.get('/prestamos/historial', requireAdmin, async (req, res) => {
 });
 
 // ── Sanciones ──
-router.get('/prestamos/sanciones', requireAdmin, async (req, res) => {
+router.get('/prestamos/sanciones', requireStaff, async (req, res) => {
   const prestamosVencidos = await Prestamo.findAll({
     where: { [Op.or]: [{ estado: 'vencido' }, { dias_retraso: { [Op.gt]: 0 } }] },
     include: [{ model: Ejemplar, include: [Material] }, { model: Usuario }],
@@ -175,7 +175,7 @@ router.get('/prestamos/sanciones', requireAdmin, async (req, res) => {
 });
 
 // ── Informes (página) ──
-router.get('/informes', requireAdmin, (req, res) =>
+router.get('/informes', requireStaff, (req, res) =>
   res.render('admin/informes', { admin: req.session.admin }));
 
 // ── Reportes ──────────────────────────────────────────────────────────────────
@@ -200,7 +200,7 @@ router.get('/reportes/mas-solicitados/pdf',   requireAdmin, (req, res) => report
 router.get('/reportes/mas-solicitados/excel', requireAdmin, (req, res) => reporteSvc.masSolicitadosExcel(res));
 
 // ── Inventario ──
-router.get('/inventario', requireAdmin, async (req, res) => {
+router.get('/inventario', requireStaff, async (req, res) => {
   const materiales   = await Material.findAll({ include: [{ model: Ejemplar, as: 'ejemplares', required: false }] });
   const map = {};
   materiales.forEach(m => {
@@ -278,7 +278,7 @@ router.get('/configuracion', requireAdmin, (req, res) =>
 // También agregar al inicio: const { Autor } = require('../models');
 
 // Buscar usuario por cédula
-router.get('/api/usuario', requireAdmin, async (req, res) => {
+router.get('/api/usuario', requireStaff, async (req, res) => {
   const { cedula } = req.query;
   try {
     const u = await Usuario.findOne({
@@ -321,7 +321,7 @@ router.get('/api/usuario', requireAdmin, async (req, res) => {
 });
 
 // Registrar usuario nuevo en el momento del préstamo
-router.post('/api/usuario', requireAdmin, async (req, res) => {
+router.post('/api/usuario', requireStaff, async (req, res) => {
   try {
     const { cedula, nombre, apellido, tipo, telefono, correo } = req.body;
     const u = await Usuario.create({ cedula, nombre, apellido, tipo, telefono: telefono||null, correo: correo||null });
@@ -332,7 +332,7 @@ router.post('/api/usuario', requireAdmin, async (req, res) => {
 });
 
 // Buscar ejemplares disponibles por título
-router.get('/api/ejemplares', requireAdmin, async (req, res) => {
+router.get('/api/ejemplares', requireStaff, async (req, res) => {
   const { titulo } = req.query;
   const { Op } = require('sequelize');
   const { Autor, Libro } = require('../models');

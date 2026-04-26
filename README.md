@@ -53,6 +53,22 @@ El servidor estará disponible en `http://localhost:3000` (o el puerto configura
 - **Reportes**: Generación de informes en PDF y Excel
 - **Backup**: Creación de backups automáticos de la base de datos
 - **Imágenes**: Procesamiento de portadas de libros
+- **Roles**: Administrador y Bibliotecario con permisos diferenciados
+
+## Roles de Usuario
+
+| Rol | Descripción | Permisos |
+|-----|-------------|----------|
+| `admin` | Administrador del sistema | Acceso completo: gestión de usuarios, configuración, reportes, catálogo |
+| `bibliotecario` | Bibliotecólogo | Gestión de préstamos, catálogo, categorías, inventarios, reportes |
+
+## Migración de Roles (solo si actualizas desde versión anterior)
+
+Si actualizas desde una versión anterior, ejecuta el script de migración:
+
+```bash
+mysql -u root -p biblioteca < scripts/actualizar_rol.sql
+```
 
 ## Crear Primer Administrador
 
