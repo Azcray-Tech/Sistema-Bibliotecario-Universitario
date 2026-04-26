@@ -13,8 +13,10 @@ exports.buscar = async ({ q, titulo, autor, isbn, categoria, tipo, page = 1, lim
 
   const include = [
     { model: Libro,   as: 'libro',   required: false,
-      where: isbn ? { isbn: { [Op.like]: '%' + isbn + '%' } } : undefined },
-    { model: Tesis,   as: 'tesis',   required: false },
+      where: isbn ? { isbn: { [Op.like]: '%' + isbn + '%' } } : undefined,
+      include: [{ model: Autor, as: 'autores', through: { attributes: [] }, required: false }] },
+    { model: Tesis,   as: 'tesis',   required: false,
+      include: [{ model: Autor, as: 'autores', through: { attributes: [] }, required: false }] },
     { model: Revista, as: 'revista', required: false },
     { model: Anuario, as: 'anuario', required: false },
     { model: Ejemplar, as: 'ejemplares', required: false,
@@ -28,10 +30,18 @@ exports.buscar = async ({ q, titulo, autor, isbn, categoria, tipo, page = 1, lim
     distinct: true
   });
 
-  // Calcular disponibles por material
   const materiales = rows.map(m => {
+    const data = m.toJSON();
     const disponibles = (m.ejemplares || []).filter(e => e.estado === 'disponible').length;
-    return { ...m.toJSON(), stock: disponibles };
+    
+    let autor = '';
+    if (m.libro && m.libro.autores && m.libro.autores.length > 0) {
+      autor = m.libro.autores.map(a => a.nombre).join(', ');
+    } else if (m.tesis && m.tesis.autores && m.tesis.autores.length > 0) {
+      autor = m.tesis.autores.map(a => a.nombre).join(', ');
+    }
+    
+    return { ...data, stock: disponibles, autor };
   });
 
   return { materiales, total: count, pages: Math.ceil(count / limit), page: +page };
@@ -39,12 +49,24 @@ exports.buscar = async ({ q, titulo, autor, isbn, categoria, tipo, page = 1, lim
 
 exports.recientes = async (limit = 12) => {
   const rows = await Material.findAll({
-    include: [{ model: Ejemplar, as: 'ejemplares', required: false, attributes: ['estado'] }],
+    include: [
+      { model: Ejemplar, as: 'ejemplares', required: false, attributes: ['estado'] },
+      { model: Libro, as: 'libro', required: false,
+        include: [{ model: Autor, as: 'autores', through: { attributes: [] }, required: false }] },
+      { model: Tesis, as: 'tesis', required: false,
+        include: [{ model: Autor, as: 'autores', through: { attributes: [] }, required: false }] }
+    ],
     order: [['createdAt','DESC']],
     limit
   });
-  return rows.map(m => ({
-    ...m.toJSON(),
-    stock: (m.ejemplares || []).filter(e => e.estado === 'disponible').length
-  }));
+  return rows.map(m => {
+    const disponibles = (m.ejemplares || []).filter(e => e.estado === 'disponible').length;
+    let autor = '';
+    if (m.libro && m.libro.autores && m.libro.autores.length > 0) {
+      autor = m.libro.autores.map(a => a.nombre).join(', ');
+    } else if (m.tesis && m.tesis.autores && m.tesis.autores.length > 0) {
+      autor = m.tesis.autores.map(a => a.nombre).join(', ');
+    }
+    return { ...m.toJSON(), stock: disponibles, autor };
+  });
 };

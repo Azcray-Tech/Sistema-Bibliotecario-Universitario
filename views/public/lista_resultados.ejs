@@ -8,12 +8,12 @@
         <h2>Catálogo Bibliográfico</h2>
     </div>
 </div>
-<div class="container mt-4">
+<div class="container pb-4">
     <div class="search-container">
         <form action="/buscar" method="GET">
-            <div class="row g-3">
+            <div class="row g-2">
                 <div class="col-md-10">
-                    <input type="text" name="q" class="form-control" placeholder="Buscar..." value="<%= query.q || '' %>">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por título, autor, ISBN..." value="<%= query.q || '' %>">
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-search w-100"><i class="bi bi-search me-2"></i>Buscar</button>
@@ -22,10 +22,10 @@
         </form>
     </div>
 
-    <div class="mt-4">
-        <div class="results-header">
+    <div class="mt-3">
+        <div class="results-header mb-3">
             <div>
-                <h4 class="mb-0">Resultados de búsqueda</h4>
+                <h5 class="mb-1">Resultados de búsqueda</h5>
                 <small class="text-muted">Se encontraron <%= total %> resultado(s)</small>
             </div>
         </div>
@@ -51,23 +51,33 @@
                 <div class="book-title"><%= m.titulo %></div>
                 <div class="book-author"><%= m.autor %></div>
                 <div class="book-meta">
-                    <% if (m.isbn) { %><span><i class="bi bi-upc-scan me-1"></i>ISBN: <%= m.isbn %></span><% } %>
-                    <% if (m.ubicacion) { %><span><i class="bi bi-geo-alt me-1"></i><%= m.ubicacion %></span><% } %>
+                    <% if (m.libro?.isbn) { %><span><i class="bi bi-upc-scan me-1"></i>ISBN: <%= m.libro.isbn %></span><% } %>
+                    <% if (m.anio) { %><span><i class="bi bi-calendar3 me-1"></i>Año: <%= m.anio %></span><% } %>
+                    <% if (m.libro?.editorial) { %><span><i class="bi bi-building me-1"></i><%= m.libro.editorial %></span><% } %>
                 </div>
-                <div class="mt-2">
+                <div class="book-footer">
                     <span class="badge-category"><%= m.categoria %></span>
-                    <% if (m.stock > 0) { %>
-                        <span class="badge-available ms-2">Disponible (<%= m.stock %> <%= m.stock===1?'copia':'copias' %>)</span>
-                    <% } else { %>
-                        <span class="ms-2" style="color:#dc3545;font-weight:600;">No disponible</span>
-                    <% } %>
+                    <span class="badge-tipo">
+                        <% if (m.tipo === 'libro') { %><i class="bi bi-book"></i><% } %>
+                        <% if (m.tipo === 'tesis') { %><i class="bi bi-mortarboard"></i><% } %>
+                        <% if (m.tipo === 'revista') { %><i class="bi bi-journal-text"></i><% } %>
+                        <% if (m.tipo === 'anuario') { %><i class="bi bi-calendar3"></i><% } %>
+                        <%= m.tipo %>
+                    </span>
+                    <span class="badge-availability <%= m.stock > 0 ? 'available' : 'unavailable' %>">
+                        <% if (m.stock > 0) { %>
+                            <i class="bi bi-check-circle-fill"></i> Disponible (<%= m.stock %>)
+                        <% } else { %>
+                            <i class="bi bi-x-circle-fill"></i> No disponible
+                        <% } %>
+                    </span>
                 </div>
             </div>
         </div>
         <% }) %>
 
         <% if (pages > 1) { %>
-        <nav class="pagination-custom">
+        <nav class="pagination-custom mt-4">
             <ul class="pagination justify-content-center">
                 <li class="page-item <%= page<=1?'disabled':'' %>">
                     <a class="page-link" href="/buscar?<%= new URLSearchParams({...query, page: page-1}) %>"><i class="bi bi-chevron-left"></i></a>
@@ -85,6 +95,5 @@
         <% } %>
     </div>
 </div>
-<div style="height:4rem;"></div>
 </body>
 </html>
