@@ -14,6 +14,44 @@
     --sidebar-width: 280px;
 }
 
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
+
+/* Scrollbar del sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
 /* ============================================
    ESTILOS GLOBALES BASE
    ============================================ */
@@ -157,13 +195,129 @@ body.login-page {
     position: fixed;
     height: 100vh;
     overflow-y: auto;
+    overflow-x: hidden;
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.15);
     z-index: 1000;
+    transition: width 0.3s ease;
+}
+
+.sidebar-toggle-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.1);
+}
+
+.sidebar-toggle {
+    position: fixed;
+    left: 10px;
+    top: 15px;
+    z-index: 1002;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.sidebar-toggle:hover {
+    background: #1e4438;
+}
+
+body.sidebar-collapsed .sidebar-toggle {
+    display: flex;
+    left: 80px;
+}
+
+.sidebar.collapsed {
+    width: 75px;
+}
+
+.sidebar.collapsed .sidebar-header {
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar.collapsed .sidebar-header h4,
+.sidebar.collapsed .sidebar-header .user-info {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-header .sidebar-toggle-btn {
+    position: static;
+    transform: none;
+    opacity: 1;
+    display: flex;
+}
+
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .logout-btn span {
+    display: none;
+}
+
+.sidebar.collapsed .menu-section {
+    display: none;
+}
+
+.sidebar.collapsed .menu-item {
+    justify-content: center;
+    padding: 0.8rem 0.25rem;
+    gap: 0;
+}
+
+.sidebar.collapsed .menu-item i {
+    font-size: 1.3rem;
+    width: auto;
+}
+
+.sidebar.collapsed .logout-btn {
+    justify-content: center;
+    padding: 0.8rem 0.25rem;
+    margin: 1rem 0.25rem;
+    gap: 0;
+}
+
+.sidebar.collapsed .logout-btn i {
+    font-size: 1.3rem;
+}
+
+body.sidebar-collapsed .main-content {
+    margin-left: 75px;
 }
 
 .sidebar-header {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
 }
 
 .sidebar-header h4 {
