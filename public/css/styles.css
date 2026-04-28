@@ -842,6 +842,8 @@ textarea.form-control {
     color: var(--color-text-dark);
     margin-bottom: 0.5rem;
     line-height: 1.3;
+    flex: 1;
+    min-width: 0;
 }
 
 .ficha-autores {

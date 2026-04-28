@@ -1,14 +1,24 @@
-# Sistema Bibliotecario — PWA Local LAN
+# Sistema Bibliotecario
 
-Sistema de gestión bibliotecaria con acceso desde red local (LAN). Administra materiales, préstamos, usuarios y genera reportes.
+> Sistema de gestión bibliotecaria moderno con acceso desde red local (LAN)
 
-## Requisitos
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0+-00758F.svg)](https://www.mysql.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **Node.js** 18+
-- **MariaDB** 10.6+ o **MySQL** 8.0+
-- **mysqldump** (incluido en instalación de MySQL/MariaDB)
+Sistema integral para la administración de bibliotecas, permitiendo gestionar materiales, préstamos, usuarios y generar reportes. Diseñado para funcionar en una red local con acceso web.
 
-## Instalación
+## Características Principales
+
+- **Gestión de Materiales**: Libros, revistas, tesis, anuarios y artículos
+- **Catálogo Público**: Búsqueda avanzada con filtros por título, autor, ISBN, categoría y tipo
+- **Sistema de Préstamos**: Registro, renovación y devolución de materiales
+- **Gestión de Usuarios**: Administración de estudiantes, profesores y usuarios
+- **Reportes**: Generación de informes en PDF y Excel
+- **Backup**: Creación automática de respaldos de la base de datos
+- **UI Moderna**: Interfaz responsiva con diseño elegante y sidebar colapsable
+
+## Inicio Rápido
 
 ```bash
 # Instalar dependencias
@@ -22,87 +32,90 @@ cp .env.example .env
 npm start
 ```
 
-El servidor estará disponible en `http://localhost:3000` (o el puerto configurado en .env).
+El servidor estará disponible en `http://localhost:3000`
+
+## Requisitos
+
+| Requisito | Versión Mínima |
+|-----------|----------------|
+| Node.js | 18+ |
+| MySQL / MariaDB | 8.0 / 10.6+ |
+| mysqldump | Incluido en MySQL |
 
 ## Estructura del Proyecto
 
 ```
-├── app.js                  # Punto de entrada de la aplicación
-├── config/                 # Configuración de base de datos
-├── models/                 # Modelos Sequelize (Usuario, Material, Prestamo, etc.)
-├── controllers/            # Controladores de la aplicación
-├── services/               # Servicios (búsqueda, préstamos, imágenes, reportes, backup)
-├── routes/                 # Rutas públicas y de administración
-│   ├── public.js           # Rutas sin autenticación
-│   └── admin.js            # Rutas con autenticación
-├── middleware/             # Middleware (autenticación)
-├── views/                  # Plantillas EJS
-│   ├── public/             # Vistas públicas (buscador, resultados, ficha)
-│   └── admin/              # Vistas del panel de administración
-├── public/                 # Archivos estáticos (CSS, JS, imágenes)
-├── backup/                 # Backups automáticos generados
-└── documentos/             # Documentación del proyecto
+sistema-bibliotecario/
+├── app.js                      # Punto de entrada de la aplicación
+├── config/
+│   └── database.js             # Configuración de Sequelize
+├── models/                     # Modelos de la base de datos
+├── controllers/                # Controladores de la aplicación
+├── services/                   # Servicios de negocio
+├── routes/                     # Rutas de la aplicación
+│   ├── public.js               # Rutas públicas
+│   └── admin.js                # Rutas administrativas
+├── middleware/
+│   └── auth.js                 # Middleware de autenticación
+├── views/                      # Plantillas EJS
+│   ├── public/                 # Vistas públicas
+│   └── admin/                  # Vistas del panel admin
+├── public/                     # Archivos estáticos
+├── scripts/                    # Scripts utilitarios
+└── backup/                     # Respaldos automáticos
 ```
-
-## Características
-
-- **Gestión de materiales**: Libros, revistas, tesis, anuarios, artículos
-- **Catálogo público**: Búsqueda y consulta de materiales
-- **Préstamos**: Registro, renovación y devolución
-- **Usuarios**: Gestión de usuarios y administradores
-- **Reportes**: Generación de informes en PDF y Excel
-- **Backup**: Creación de backups automáticos de la base de datos
-- **Imágenes**: Procesamiento de portadas de libros
-- **Roles**: Administrador y Bibliotecario con permisos diferenciados
 
 ## Roles de Usuario
 
 | Rol | Descripción | Permisos |
 |-----|-------------|----------|
-| `admin` | Administrador del sistema | Acceso completo: gestión de usuarios, configuración, reportes, catálogo |
-| `bibliotecario` | Bibliotecólogo | Gestión de préstamos, catálogo, categorías, inventarios, reportes |
-
-## Migración de Roles (solo si actualizas desde versión anterior)
-
-Si actualizas desde una versión anterior, ejecuta el script de migración:
-
-```bash
-mysql -u root -p biblioteca < scripts/actualizar_rol.sql
-```
-
-## Crear Primer Administrador
-
-Desde la base de datos (usando un hash de bcrypt):
-
-```sql
-INSERT INTO usuarios (cedula, nombre, tipo, password)
-VALUES ('12345678', 'Administrador', 'admin', '$2b$10$...hash_bcrypt...');
-```
-
-O ejecutar el script:
-
-```bash
-node scripts/crear_admin.js
-```
+| `admin` | Administrador | Acceso completo: usuarios, configuración, reportes, catálogo |
+| `bibliotecario` | Bibliotecólogo | Préstamos, catálogo, categorías, inventarios, reportes |
 
 ## Reglas de Préstamo
 
-- **Plazo estándar**: 14 días
-- **Renovación**: 1 vez, +7 días adicionales
-- **Sanción por retraso**: Suspensión por (días de retraso × 2) días
+| Regla | Detalle |
+|-------|---------|
+| Plazo estándar | 14 días |
+| Renovaciones | 1 permitida (máximo +7 días) |
+| Sanción por retraso | Suspensión por (días de retraso × 2) días |
 
-## Variables de Entorno (.env)
+## Variables de Entorno
 
-| Variable | Descripción | Ejemplo |
-|----------|-------------|---------|
-| PORT | Puerto del servidor | 3000 |
-| DB_HOST | Host de la base de datos | localhost |
-| DB_PORT | Puerto de MySQL/MariaDB | 3306 |
-| DB_NAME | Nombre de la base de datos | biblioteca |
-| DB_USER | Usuario de la base de datos | root |
-| DB_PASS | Contraseña de la base de datos | — |
-| SESSION_SECRET | Clave para sesiones | cadena_secreta |
+Crea un archivo `.env` basado en `.env.example`:
+
+```env
+PORT=3000
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=biblioteca
+DB_USER=root
+DB_PASS=tu_contraseña
+SESSION_SECRET=tu_secreto_aqui
+BACKUP_DIR=./backup
+COVERS_DIR=./public/images/covers
+MYSQLDUMP_PATH=C:\xampp\mysql\bin\mysqldump.exe
+```
+
+## Scripts Disponibles
+
+```bash
+npm start        # Iniciar el servidor
+npm run dev      # Iniciar con nodemon (desarrollo)
+```
+
+## Contribuir
+
+1. Fork el repositorio
+2. Crea tu rama de características (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
 ## Licencia
 
-MIT
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+
+---
+
+Desarrollado para bibliotecas universitarias

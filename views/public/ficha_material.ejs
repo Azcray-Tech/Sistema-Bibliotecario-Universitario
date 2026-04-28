@@ -32,31 +32,33 @@
                 <% } %>
             </div>
 
-            <!-- Columna derecha: Título, badges, autor, disponibilidad y resumen -->
+            <!-- Columna derecha: Título, autor, tipo/categoría y resumen -->
             <div class="col-lg-9">
-                <!-- Badges y Disponibilidad en la misma línea -->
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
-                    <div class="ficha-badges">
-                        <span class="badge-tipo"><i class="bi bi-tag-fill me-1"></i><%= material.tipo %></span>
-                        <span class="badge-categoria"><%= material.categoria %></span>
-                    </div>
-                    <div class="ficha-disponibilidad-texto <%= disponibles > 0 ? 'disponible' : 'no-disponible' %>">
+                <!-- Título y Disponibilidad en flex -->
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-2">
+                    <!-- Título -->
+                    <h1 class="ficha-titulo mb-0"><%= material.titulo %></h1>
+                    <!-- Disponibilidad (esquina superior derecha) -->
+                    <div class="ficha-disponibilidad-texto <%= disponibles > 0 ? 'disponible' : 'no-disponible' %> flex-shrink-0">
                         <% if (disponibles > 0) { %>
-                            <i class="bi bi-check-circle-fill me-1"></i> Disponible - <%= disponibles %> ejemplar(es) disponible(s)
+                            <i class="bi bi-check-circle-fill me-1"></i> Disponible - <%= disponibles %> ejemplar(es)
                         <% } else { %>
-                            <i class="bi bi-x-circle-fill me-1"></i> No disponible - <%= material.ejemplares ? material.ejemplares.length : 0 %> ejemplar(es) en préstamo
+                            <i class="bi bi-x-circle-fill me-1"></i> No disponible - <%= material.ejemplares ? material.ejemplares.length : 0 %> ejemplar(es)
                         <% } %>
                     </div>
                 </div>
-                
-                <!-- Título -->
-                <h1 class="ficha-titulo"><%= material.titulo %></h1>
                 
                 <!-- Autores -->
                 <% const autores = material.libro?.autores || material.tesis?.autores || []; %>
                 <% if (autores.length > 0) { %>
                 <p class="ficha-autores mb-2"><i class="bi bi-person-fill me-2"></i><%= autores.map(a => a.nombre).join(' / ') %></p>
                 <% } %>
+
+                <!-- Tipo y Categoría -->
+                <div class="ficha-badges">
+                    <span class="badge-tipo"><i class="bi bi-tag-fill me-1"></i><%= material.tipo %></span>
+                    <span class="badge-categoria"><i class="bi bi-bookmark-fill me-1"></i><%= material.categoria %></span>
+                </div>
 
                 <!-- Resumen prominente -->
                 <% if (material.resumen) { %>
